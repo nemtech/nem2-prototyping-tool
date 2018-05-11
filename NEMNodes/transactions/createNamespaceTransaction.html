@@ -1,0 +1,66 @@
+<!-- 
+ * Copyright 2018 NEM
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('createNamespace', {
+        category: 'NEM Transactions',
+        color: '#F3AA42',
+        defaults: {
+            name: { value: "" },
+            namespace: { value: undefined },
+            leaseTime: { value: 0 },
+            network: { value: "", type: "networkConfig" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "face.png",
+        label: function () {
+
+            return this.name || "create namespace transaction";
+        },
+        oneditprepare: function () {
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="createNamespace">
+    <div class="form-row" id="node-input-networkView" >
+        <label for="node-input-server"><i></i> network</label>
+        <input type="text" id="node-input-network">
+    </div>
+                <div class="form-row" id="node-input-namespaceView">
+                        <label for="node-input-namespace"><i></i>root namespace</label>
+                        <input type="text" id="node-input-namespace" placeholder="namepspace">
+                    </div>
+                <div class="form-row" id="node-input-leaseTimeView">
+                        <label for="node-input-leaseTime"><i></i> lease time</label>
+                        <input type="number" id="node-input-leaseTime">
+                    </div>
+                    <div class="form-row" id="node-input-nameView">
+                        <label for="node-input-name"><i class="icon-tag"></i>name</label>
+                        <input type="text" id="node-input-name"placeholder="name (optional)">
+                    </div>
+   
+</script>
+
+
+<script type="text/x-red" data-help-name="createNamespace">
+    <p>A namespace is an on-chain unique domain for your mosaics. You can specify the length of domain rental, by entering the amount of confirmed blocks you wish to lease the namespace for.<br/>
+        A namespace name must be unique and may have a maximum length of 64 characters.<br/><br/>
+Allowed characters are a, b, c, …, z, 0, 1, 2, …, 9, ‘, _ , -. <br/><br/>
+        If one account creates a namespace, that namespace will appear unique in the NEM ecosystem. For example, you create a namespace called <i>foo</i>, a second person cannot create the same namespace.<br/>
+    </p>
+</script>

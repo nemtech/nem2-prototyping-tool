@@ -1,0 +1,92 @@
+<!-- 
+ * Copyright 2018 NEM
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('createMosaicDefinition', {
+        category: 'NEM Transactions',
+        color: '#F2A12D',
+        defaults: {
+            name: { value: "" },
+            namespace: { value: undefined },
+            mosaic: { value: undefined },
+            supplyMutable: { value: true },
+            transferable: { value: true },
+            levyMutable: { value: false },
+            divisibility: { value: 0 },
+            leaseTime: { value: 0 },
+            network: { value: "", type: "networkConfig" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "mosaic.png",
+        label: function () {
+
+            return this.name || "create mosaic definition transaction";
+        },
+        oneditprepare: function () {
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="createMosaicDefinition">
+    <div class="form-row" id="node-input-networkView" >
+        <label for="node-input-server"><i></i> network</label>
+        <input type="text" id="node-input-network">
+    </div>
+                <div class="form-row" id="node-input-namespaceView">
+                        <label for="node-input-namespace"><i></i>Namespace</label>
+                        <input type="text" id="node-input-namespace" placeholder="nem">
+                    </div>
+                    <div class="form-row"id="node-input-mosaicView" >
+                        <label for="node-input-mosaic"><i></i> Mosaic</label>
+                        <input type="text" id="node-input-mosaic" placeholder="xem">
+                    </div>
+                    <div class="form-row" id="node-input-transferableView">
+                            <label for="node-input-transferable"><i></i> transferable</label>
+                            <input type="checkbox" id="node-input-transferable">
+                        </div>
+                        <div class="form-row" id="node-input-supplyMutableView">
+                            <label for="node-input-supplyMutable"><i></i> supply mutable</label>
+                            <input type="checkbox" id="node-input-supplyMutable">
+                        </div>
+                        <div class="form-row" id="node-input-divisibilityView">
+                            <label for="node-input-divisibility"><i></i> divisibility</label>
+                            <input type="number" id="node-input-divisibility">
+                        </div>
+                <div class="form-row" id="node-input-leaseTimeView">
+                        <label for="node-input-leaseTime"><i></i> lease time</label>
+                        <input type="number" id="node-input-leaseTime">
+                    </div>
+                    <div class="form-row" id="node-input-nameView">
+                        <label for="node-input-name"><i class="icon-tag"></i>name</label>
+                        <input type="text" id="node-input-name"placeholder="name (optional)">
+                    </div>
+</script>
+
+
+<script type="text/x-red" data-help-name="createMosaicDefinition">
+    <p>This node is used to define a mosaic before it is created.
+       <ul>
+           <li>Namespace: provide the full reference where the mosaic will exist. E.g.: rootnamespace or rootnamespace.subnamespace or rootnamespace.subnamespace.subnamespace. An account must rent at least one root namespace, which the mosaic definition can then refer to.</li>
+           <li>Mosaic: name your mosaic, up to a size limit of 64 characters; must be unique under the domain name.</li>
+           <li>Transferable: choose whether the mosaic can be transferred to and from arbitrary accounts, or only allowing the mosaic to go back to the creator, once transferred.</li>
+           <li>Supply mutable: when selected, the mosaic supply can be changed at a later point in time.</li>
+           <li>Divisibility: determines up to what decimal place the mosaic can be divided. Divisibility of 3 means that a mosaic can be divided into smallest parts of 0.001 mosaics. The divisibility must be in the range of 0 and 6.</li>
+           <li>Lease time: The number of confirmed blocks you would like to rent the space for the mosaic. Should be inferior or equal to namespace duration.</li>
+           <li>Name: of the node-red node</li>
+       </ul>
+    </p>
+</script>

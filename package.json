@@ -1,0 +1,56 @@
+{
+    "name": "node-red-contrib-nem",
+    "version": "0.18.3",
+    "description": "NEM blockchain nodes",
+    "homepage": "http://nem.io",
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "gitlab",
+        "url": "https://gitlab.com/NEM2/node-red-contrib-nem.git"
+    },
+    "keywords": [
+        "nem",
+        "blockchain",
+        "nem.io",
+        "catapult"
+    ],
+    "node-red": {
+        "nodes": {
+            "account": "NEMNodes/account/account.js",
+            "publicAccount": "NEMNodes/account/publicAccount.js",
+            "accountInfo": "NEMNodes/account/accountInfo.js",
+            "signTransaction": "NEMNodes/account/signTransaction.js",
+            "allTransactions": "NEMNodes/account/transactions.js",
+            "incomingTransactions": "NEMNodes/account/transactions.js",
+            "outgoingTransactions": "NEMNodes/account/transactions.js",
+            "generateAccount":"NEMNodes/account/generateAccount.js",
+            "aggregateBondedTransactions": "NEMNodes/account/transactions.js",
+            "unconfirmedTransactions": "NEMNodes/account/transactions.js",
+            "serverConfig": "NEMNodes/config/serverConfig.js",
+            "networkConfig": "NEMNodes/config/networkConfig.js",
+            "announceTransaction": "NEMNodes/transactions/announceTransaction.js",
+            "transfer": "NEMNodes/transactions/transferTransaction.js",
+            "aggregateComplete": "NEMNodes/transactions/aggregateCompleteTransaction.js",
+            "aggregateBonded": "NEMNodes/transactions/aggregateBondedTransaction.js",
+            "createNamespace": "NEMNodes/transactions/createNamespaceTransaction.js",
+            "createSubNamespace": "NEMNodes/transactions/createSubNamespaceTransaction.js",
+            "createMosaicDefinition": "NEMNodes/transactions/createMosaicDefinitionTransaction.js",
+            "mosaicSupplyChange": "NEMNodes/transactions/mosaicSupplyChangeTransaction.js",
+            "lockFund": "NEMNodes/transactions/lockFundTransaction.js",
+            "secretLock": "NEMNodes/transactions/secretLockTransaction.js",
+            "secretProof": "NEMNodes/transactions/secretProofTransaction.js",
+            "configMultisig": "NEMNodes/transactions/configMultisigTransaction.js",
+            "cosignature": "NEMNodes/transactions/cosignatureTransaction.js",
+            "newBlock": "NEMNodes/listeners/newBlock.js",
+            "listener": "NEMNodes/listeners/listener.js"
+        }
+    },
+    "dependencies": {
+        "foo": "0.0.7",
+        "nem2-sdk": "0.9.2",
+        "rxjs": "^5.5.8"
+    },
+    "engines": {
+        "node": ">=4"
+    }
+}

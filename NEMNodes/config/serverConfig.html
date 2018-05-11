@@ -1,0 +1,57 @@
+<!-- 
+ * Copyright 2018 NEM
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('serverConfig', {
+        category: 'config',
+        defaults: {
+            url: { value: "" },
+            customServer: { value: "" },
+            network: { value: "", type: "networkConfig", required: false },
+            port: { value: "3000", required: true, validate: RED.validators.number() }
+        },
+        label: function () {
+            if (!this.customServer == "") {
+                this.url = this.customServer;
+
+            }
+            var returnMsg = "server:" + this.url + ":" + this.port;
+
+            return returnMsg;
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="serverConfig">
+    <!-- list will be populated when data is public available -->
+    <div class="form-row">
+        <label for="node-config-input-url">url</label>
+        <select type="text" id="node-config-input-url" style="width:70%;">
+        </select>
+        <label for="node-config-input-customServer">custom server</label>
+        <input value="test" type="text"  id="node-config-input-customServer"></input>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-config-input-network"><i class="icon-globe"></i> network</label>
+        <input type="text" id="node-config-input-network">
+   </div>
+
+    <div class="form-row">
+        <label for="node-input-port">Port</label>
+        <input value="3000" type="text"  id="node-config-input-port" style="width:65px" placeholder="3000" ></input>
+    </div>
+</script>

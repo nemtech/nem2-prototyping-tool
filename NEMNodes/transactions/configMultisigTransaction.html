@@ -1,0 +1,78 @@
+<!-- 
+ * Copyright 2018 NEM
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('configMultisig', {
+        category: 'NEM Transactions',
+        color: '#F3AA42',
+        defaults: {
+            name: { value: "" },
+            minApproval: { value: "" },
+            minRemoval: { value: "" },
+            remove: { value: false },
+            trigger: { value: "" },
+            network: { value: "", type: "networkConfig" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "multisig.png",
+        label: function () {
+
+            return this.name || "config multisig transaction";
+        },
+        oneditprepare: function () {
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="configMultisig">
+    <div class="form-row" id="node-input-networkView" >
+        <label for="node-input-server"><i></i> network</label>
+        <input type="text" id="node-input-network">
+    </div>
+                    <div class="form-row" id="node-input-minApprovalView">
+                        <label for="node-input-minApproval"><i></i>min approval</label>
+                        <input type="text" id="node-input-minApproval" placeholder="minApproval">
+                    </div>
+                    <div class="form-row" id="node-input-minRemovalView">
+                        <label for="node-input-minRemoval"><i></i>min removal</label>
+                        <input type="text" id="node-input-minRemoval" placeholder="minRemoval">
+                    </div>
+                    <div class="form-row" id="node-input-removeView">
+                        <label for="node-input-remove"><i></i>remove</label>
+                        <input type="checkbox" id="node-input-remove" placeholder=false>
+                    </div>
+                    <div class="form-row" id="node-input-triggerView">
+                        <label for="node-input-trigger"><i class="icon-play"></i>trigger</label>
+                        <input type="text" id="node-input-trigger" placeholder="trigger">
+                    </div>
+                    <div class="form-row" id="node-input-nameView">
+                        <label for="node-input-name"><i class="icon-tag"></i>name</label>
+                        <input type="text" id="node-input-name"placeholder="name (optional)">
+                    </div>
+   
+</script>
+
+<script type="text/x-red" data-help-name="configMultisig">
+    <p>This node holds the configuration for a multisignature transaction.<br/>
+        <ul>
+                <li>Minimum Approval: The number of signatures needed to approve a transaction.</li>
+                <li>Minimum Removal: The number of signatures needed to remove a cosignatory.</li>
+                <li>Remove option: adding or removing multisignature of an account.</li>
+                <li>Trigger: specifing the triggering payload for this node.</li>
+        </ul>
+    </p>
+</script>
