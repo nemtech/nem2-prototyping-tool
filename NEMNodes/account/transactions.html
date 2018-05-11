@@ -1,0 +1,107 @@
+<!-- 
+ * Copyright 2018 NEM
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('transactions', {
+        category: 'NEM Account',
+        color: '#C5523C',
+        defaults: {
+            name: { value: "" },
+            publicKey: { value: "" },
+            server: { value: "", type: "serverConfig" },
+            allTransactions: { value: false },
+            pageSize: { value: 10 },
+            transactionsType: { value: "transactions" }
+
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "face.png",
+        label: function () {
+            return this.name || this.transactionsType || "transactions";
+        },
+        oneditprepare: function () {
+            $("#node-input-allTransactions").on("change", function () {
+                if (this.checked) {
+                    $("#node-input-pageSizeView").hide();
+                }
+                else { $("#node-input-pageSizeView").show(); }
+            });
+        }
+    });
+</script>
+
+
+<script type="text/x-red" data-template-name="transactions">
+    
+    <div class="form-row">
+        <label for="node-input-server"><i class="icon-globe"></i> Server</label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-transactionsType"><i></i>transactions type</label>
+        <select type="text" id="node-input-transactionsType">
+        <option value="transactions">transactions</option>
+        <option value="incomingTransactions">incoming transactions</option>
+        <option value="outgoingTransactions">outgoing transactions</option>
+        <option value="unconfirmedTransactions">unconfirmed transactions</option>
+        <option value="aggregateBondedTransactions">aggregate bonded transactions</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-publicKey"><i></i> public key</label>
+        <input type="text" id="node-input-publicKey" placeholder="publicKey">
+    </div>
+    <div class="form-row"id="node-input-allTransactionsView">
+        <label for="node-input-allTransactions"><i></i>all transactions</label>
+        <input type="checkbox" id="node-input-allTransactions">
+    </div>
+    <div class="form-row"id="node-input-pageSizeView">
+        <label for="node-input-pageSize"><i></i>last x transactions</label>
+        <input type="number" id="node-input-pageSize" placeholder="10">
+    </div>  
+    <div class="form-row" id="node-input-nameView">
+        <label for="node-input-name"><i class="icon-tag"></i>name</label>
+        <input type="text" id="node-input-name"placeholder="name (optional)">
+    </div>
+</script>
+
+
+
+<script type="text/x-red" data-help-name="transactions">
+    <p>Get all transactions for the provided address. There is also the option for you to limit the number of results.<br/>
+    </p>
+</script>
+
+<script type="text/x-red" data-help-name="incomingTransactions">
+    <p>Get all incoming transactions for the provided address. There is also the option for you to limit the number of results.<br/>
+    </p>
+</script>
+
+<script type="text/x-red" data-help-name="outgoingTransactions">
+    <p>Get all outgoing transactions for the provided address. There is also the option for you to limit the number of results.<br/>
+    </p>
+</script>
+
+<script type="text/x-red" data-help-name="unconfirmedTransactions">
+    <p>Get all unconfirmed transactions for the provided address. There is also the option for you to limit the number of results.<br/>
+    </p>
+</script>
+
+<script type="text/x-red" data-help-name="aggregateBondedTransactions">
+    <p><br/> 
+    </p>
+</script>

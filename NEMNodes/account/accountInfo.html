@@ -1,0 +1,75 @@
+<!-- 
+ * Copyright 2018 NEM
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('account info', {
+        category: 'NEM Account',
+        color: '#C5523C',
+        defaults: {
+            name: { value: "" },
+            address: { value: "" },
+            server: { value: "", type: "serverConfig" },
+            accountType: { value: "getAccountInfo" }
+
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "face.png",
+        label: function () {
+            return this.name || "account info";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="account info">
+    
+    <div class="form-row">
+        <label for="node-input-server"><i class="icon-globe"></i> Server</label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-accountType"><i></i>account type</label>
+        <select type="text" id="node-input-accountType">
+        <option value="getAccountInfo">account</option>
+        <option value="getMultisigAccountInfo">multisig account</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-address"><i class="fa fa-address-card"></i> Address</label>
+        <input type="text" id="node-input-address" placeholder="Address">
+    </div>
+    <div class="form-row" id="node-input-nameView">
+        <label for="node-input-name"><i class="icon-tag"></i>name</label>
+        <input type="text" id="node-input-name"placeholder="name (optional)">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="account info">
+    <p>
+        Get the account info by providing the address.<br>
+        Account info consists of:
+        <ul>
+                <li>Address of the account</li>
+                <li>Height when the address was published</li>
+                <li>Importance of the account</li>
+                <li>Account metadata</li>
+                <li>Mosaics held by the account</li>
+                <li>Public key of the account</li>
+                <li>Height when the public key was published</li>
+        </ul>
+        <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_account_accountinfo_.accountinfo.html">Documentation</a><br/>
+    </p>
+</script>

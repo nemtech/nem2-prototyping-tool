@@ -1,0 +1,70 @@
+<!-- 
+ * Copyright 2018 NEM
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('generateAccount', {
+        category: 'NEM Account',
+        color: '#ADCC9F',
+        defaults: {
+            name: { value: "" },
+            network: { value: "", type: "networkConfig" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "icon-filter",
+        label: function () {
+            return this.name || "generate account";
+        },
+        oneditprepare: function () {
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="generateAccount">
+    <div class="form-row" id="node-input-networkView" >
+        <label for="node-input-server"><i></i> network</label>
+        <input type="text" id="node-input-network">
+    </div>
+<div class="form-row" id="node-input-nameView">
+    <label for="node-input-name"><i class="icon-tag"></i>name</label>
+    <input type="text" id="node-input-name"placeholder="name (optional)">
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="generateAccount">
+    <p>Use this node to generate a new account.  
+            <dt>msg</dt>
+        </p>
+     
+         <h3>Outputs</h3>
+             <ol class="node-ports">
+                 <li>Standard output
+                     <dl class="message-properties">
+                         <dt>privateKey <span class="property-type">string</span></dt>
+                         <dd>the private-key of the account</dd>
+                     </dl>
+                 </li>
+             </ol>
+        
+        <h3>Details</h3>
+            <p><code>msg.nem.privateKey</code> is used as the payload of the published message.
+        <h3>Reference</h3>
+            <ul>
+                <li><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_account_account_.account.html#generatenewaccount">SDK Reference Typescript/Javascript</a></li>
+                <li><a href="https://nemtech.github.io/concepts/account.html#fields">NEM Developer Documentation</a></li>
+            </ul>
+    </p>
+</script>

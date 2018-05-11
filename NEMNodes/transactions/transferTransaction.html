@@ -1,0 +1,147 @@
+<!-- 
+ * Copyright 2018 NEM
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('transfer', {
+        category: 'NEM Transactions',
+        color: '#f19818',
+        defaults: {
+            name: { value: "" },
+            address: { value: "" },
+            message: { value: "" },
+            amount: { value: 0 },
+            namespace: { value: "" },
+            mosaic: { value: "" },
+            publicKey: { value: "" },
+            network: { value: "", type: "networkConfig" },
+            aggregate: { value: false }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "face.png",
+        label: function () {
+
+            return this.name || "transfer transaction";
+        },
+        oneditprepare: function () {
+            $("#node-input-aggregate").on("change", function () {
+                if (this.checked) {
+                    $("#node-input-publicKeyView").show();
+                }
+                else { $("#node-input-publicKeyView").hide(); }
+            });
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="transfer">
+    <div class="form-row" id="node-input-networkView" >
+        <label for="node-input-server"><i></i> network</label>
+        <input type="text" id="node-input-network">
+    </div>
+            <div class="form-row" id="node-input-addressView">
+                    <label for="node-input-address"><i class="fa fa-address-card"></i>send to Address</label>
+                    <input type="text" id="node-input-address" placeholder="Address">
+                </div>
+                <div class="form-row" id="node-input-toAggregateView">
+                    <label for="node-input-aggregate"><i></i>to aggregate</label>
+                    <input type="checkbox" id="node-input-aggregate">
+                </div>
+                <div class="form-row" id="node-input-publicKeyView">
+                        <label for="node-input-publicKey"><i></i>public key send from</label>
+                        <input type="text" id="node-input-publicKey" placeholder="publicKey for aggregateBonded (optional)">
+                </div>
+                <div class="form-row" id="node-input-messageView">
+                        <label for="node-input-message"><i></i>Message</label>
+                        <input type="text" id="node-input-message" placeholder="Message">
+                </div>
+                <div class="form-row" id="node-input-namespaceView">
+                        <label for="node-input-namespace"><i></i>Namespace</label>
+                        <input type="text" id="node-input-namespace" placeholder="nem">
+                    </div>
+                    <div class="form-row"id="node-input-mosaicView" >
+                        <label for="node-input-mosaic"><i></i> Mosaic</label>
+                        <input type="text" id="node-input-mosaic" placeholder="xem">
+                    </div>
+                    <div class="form-row" id="node-input-amountView">
+                            <label for="node-input-amount"><i></i>Amount (can be zero)</label>
+                            <input type="number" id="node-input-amount" placeholder=0>
+                        </div>
+                        <div class="form-row" id="node-input-nameView">
+                            <label for="node-input-name"><i class="icon-tag"></i>name</label>
+                            <input type="text" id="node-input-name"placeholder="name (optional)">
+                        </div>
+</script>
+
+
+<script type="text/x-red" data-help-name="transfer">
+    <p> Use this node to prepare a transfer transaction.
+        <h3>Inputs</h3>
+        <ol class="node-ports">
+            <li>Standard input
+                <dl class="message-properties">
+                    <dt>address <span class="property-type">string</span></dt>
+                    <dd>address of the recipient</dd>
+                </dl>
+                <dl class="message-properties">
+                    <dt>message <span class="property-type">string</span></dt>
+                    <dd>message attached to the transaction</dd>
+                </dl>
+                <dl class="message-properties">
+                        <dt>public-key <span class="property-type">string</span></dt>
+                        <dd>public-key of sender, only when "to aggregate" is selected</dd>
+                </dl>
+                <dl class="message-properties">
+                        <dt>namespace <span class="property-type">string</span></dt>
+                        <dd>namespace of mosaic</dd>
+                </dl>
+                <dl class="message-properties">
+                        <dt>mosaic <span class="property-type">string</span></dt>
+                        <dd>mosaic name</dd>
+                </dl>
+                <dl class="message-properties">
+                        <dt>amount <span class="property-type">string</span></dt>
+                        <dd>mosaic amount, can be zero</dd>
+                </dl>
+            </li>
+        </ol>
+        <h3>Outputs</h3>
+        <ol class="node-ports">
+            <li>Standard output
+                <dl class="message-properties">
+                    <dt>transfer <span class="property-type">string</span></dt>
+                    <dd>specifying the transfer transaction type</dd>
+                </dl>
+                <dl class="message-properties">
+                    <dt>transferTransaction <span class="property-type">object</span></dt>
+                    <dd>nem2-sdk transferTranaction object</dd>
+                </dl>
+                <dl class="message-properties">
+                        <dt>public-key <span class="property-type">string</span></dt>
+                        <dd>public-key of sender, only when "to aggregate" is selected</dd>
+                </dl>
+            </li>
+        </ol>
+        <h3>Details</h3>
+        <p><code>msg.nem.transactionType</code>, <code>msg.nem.transaction</code>, <code>msg.nem.publicKey</code> are used as the payload of the published message.
+
+        <h3>Reference</h3>
+        <ul>
+            <li><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transfertransaction_.transfertransaction.html">SDK Reference Typescript/Javascript</a></li>
+            <li><a href="https://nemtech.github.io/concepts/transaction.html#transfer-transaction">NEM Developer Documentation</a></li>
+        </ul>
+    </p>
+</script>
