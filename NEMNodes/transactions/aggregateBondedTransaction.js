@@ -21,6 +21,7 @@ module.exports = function (RED) {
         let context = this.context().flow;
         this.network = RED.nodes.getNode(config.network).network;
         this.trigger = config.trigger;
+        let account = "";
 
         const node = this;
         context.set(node.id, []);
@@ -30,10 +31,13 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                const publicKey = msg.nem.publicKey;//get publicKey from account(public and full account)
-
+                //get publicKey from account(public and full account)
+                const publicKey = msg.nem.publicKey;
                 // save the transactions until the trigger arives
                 let savedTransactions = context.get(node.id) || [];
+                if (account === "" && msg.nem.account != undefined) {
+                    account = msg.nem.account;
+                }
                 if (msg.nem.transaction != undefined && publicKey != undefined) {
                     const senderInfo = PublicAccount.createFromPublicKey(publicKey, NetworkType[node.network]);
                     savedTransactions = savedTransactions.concat(msg.nem.transaction.toAggregate(senderInfo));
@@ -45,9 +49,12 @@ module.exports = function (RED) {
                         savedTransactions,
                         NetworkType[node.network]
                     );
+                    console.log(account);
                     msg.nem.transaction = aggregateTransaction;
                     msg.nem.transactionType = "aggregateBonded";
+                    msg.nem.account = account;
                     context.set(node.id, []);
+                    account = "";
                     node.send(msg);
                 }
 
