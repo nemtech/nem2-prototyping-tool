@@ -15,7 +15,7 @@
  */
 
 module.exports = function (RED) {
-    const { Account, NetworkType } = require('nem2-sdk');
+    const { Account, CosignatureTransaction,TransactionType ,NetworkType } = require('nem2-sdk');
     function signTransaction(config) {
         RED.nodes.createNode(this, config);
         this.network = RED.nodes.getNode(config.network).network;
@@ -32,23 +32,24 @@ module.exports = function (RED) {
                 const account = msg.nem.account || Account.createFromPrivateKey(privateKey, NetworkType[node.network]);
                 if (!node.coSign) {
                     const signedTransaction = account.sign(msg.nem.transaction);
-
                     msg.nem.signedTransaction = signedTransaction;
                     node.send(msg);
                 }
-                else if (msg.nem.transactionType == "cosignature") {
-                    const signedTransaction = account.signCosignatureTransaction(msg.nem.transaction);
+                else if (msg.nem.transaction.type === TransactionType.AGGREGATE_BONDED) {
+                    const cosignatureTransaction = CosignatureTransaction.create(msg.nem.transaction);
+                    const signedTransaction = account.signCosignatureTransaction(cosignatureTransaction);
                     msg.nem.signedTransaction = signedTransaction;
                     node.send(msg);
                 }
                 else {
                     node.status({ fill: "red", shape: "dot", text: "something went wrong with transactionType" });
                 }
-
-
             } catch (error) {
                 node.error(error);
             }
+            node.on('close', function () {
+                node.status();
+            });
 
         });
 
