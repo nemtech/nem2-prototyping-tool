@@ -15,7 +15,7 @@
  */
 
 module.exports = function (RED) {
-    const { MosaicSupplyChangeTransaction, Deadline, UInt64, NetworkType } = require('nem2-sdk');
+    const { MosaicSupplyChangeTransaction,MosaicId, Deadline, UInt64, NetworkType } = require('nem2-sdk');
     function mosaicSupplyChange(config) {
         RED.nodes.createNode(this, config);
         let context = this.context().flow;
@@ -33,7 +33,7 @@ module.exports = function (RED) {
                 const mosaic = node.mosaic || msg.nem.mosaic || undefined;
                 const mosaicSupplyChangeTransaction = MosaicSupplyChangeTransaction.create(
                     Deadline.create(),
-                    mosaic,
+                    new MosaicId(mosaic),
                     node.direction,
                     UInt64.fromUint(node.mosaicAmount),
                     NetworkType[node.network]);
