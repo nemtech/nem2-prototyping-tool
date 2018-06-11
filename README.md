@@ -45,6 +45,7 @@ Feel free to start an issue or create a pull request. Check [CONTRIBUTING](CONTR
 ## Running tests
 
 Go to the folder where you stored the repository and run:
+
 `npm test`
 
 ## Getting help
