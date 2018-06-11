@@ -21,46 +21,45 @@
         defaults: {
             name: { value: "" },
             server: { value: "", type: "serverConfig" },
-            address: { value: "" },
+            address: { value: "", validate: RED.validators.regex(/^([0-9a-zA-Z]){40}$|^((([0-9a-zA-Z\-]){7}){6}([0-9a-zA-Z]){4}){0,1}$/) },
             listenerType: { value: "confirmed" }
         },
         inputs: 1,
         outputs: 1,
-        icon: "face.png",
+        icon: "Listener-White.png",
         label: function () {
             return this.name || "listener:" + this.listenerType || "listener";
         },
         oneditprepare: function () {
         },
         button: {
-            enabled: function() {
+            enabled: function () {
                 return !this.changed
             },
-            onclick: function() {
+            onclick: function () {
                 if (this.changed) {
-                    return RED.notify(RED._("notification.warning", {message:RED._("notification.warnings.undeployedChanges")}),"warning");
+                    return RED.notify(RED._("notification.warning", { message: RED._("notification.warnings.undeployedChanges") }), "warning");
                 }
-                if(this.address =="")
-                {
-                    return RED.notify(RED._("warning: address not defined"),"warning");
+                if (!this.address.trim()) {
+                    return RED.notify(RED._("warning: address not defined"), "warning");
                 }
-                var label = (this.name||"account");
+                var label = (this.name || "listener");
                 var node = this;
                 $.ajax({
-                    url: "inject/"+this.id,
-                    type:"POST",
-                    success: function(resp, textStatus, xhr) {
-                        RED.notify(node._("succesfully started "+label),"success");
+                    url: "inject/" + this.id,
+                    type: "POST",
+                    success: function (resp, textStatus, xhr) {
+                        RED.notify(node._("succesfully started " + label), "success");
                     },
-                    error: function(jqXHR,textStatus,errorThrown) {
+                    error: function (jqXHR, textStatus, errorThrown) {
                         if (jqXHR.status == 404) {
-                            RED.notify(node._("common.notification.error",{message:node._("common.notification.errors.not-deployed")}),"error");
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.not-deployed") }), "error");
                         } else if (jqXHR.status == 500) {
-                            RED.notify(node._("common.notification.error",{message:node._("inject.errors.failed")}),"error");
+                            RED.notify(node._("common.notification.error", { message: node._("inject.errors.failed") }), "error");
                         } else if (jqXHR.status == 0) {
-                            RED.notify(node._("common.notification.error",{message:node._("common.notification.errors.no-response")}),"error");
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.no-response") }), "error");
                         } else {
-                            RED.notify(node._("common.notification.error",{message:node._("common.notification.errors.unexpected",{status:jqXHR.status,message:textStatus})}),"error");
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.unexpected", { status: jqXHR.status, message: textStatus }) }), "error");
                         }
                     }
                 });
@@ -98,7 +97,7 @@
 </script>
 
 <script type="text/x-red" data-help-name="listener">
-    <p>This opens a websocket connection, which returns a stream of events for a specific address. Specify the type in the configuration.<br/>
+    <p>This opens a <a href="https://nemtech.github.io/concepts/listener.html">websocket</a> connection, which returns a stream of events for a specific address. Specify the type in the configuration.<br/>
         Available configurations for events:
         <ul>
             <li>Confirmed transaction</li>
@@ -107,10 +106,20 @@
             <li>Unconfirmed transaction removed from the stream.</li>
             <li>AggregateBonded transaction added to the stream.</li>
             <li>AggregateBonded transaction removed from the stream.</li>
-            <li><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transactionstatuserror_.transactionstatuserror.html">Status error message</a> for each transaction that contains an error.</li>
+            <li>Status error message for each transaction that contains an error.</li>
             <li>Cosignature added for each time a cosignatory signed a transaction.</li>
         </ul>
-        <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_infrastructure_listener_.listener.html">Documentation</a><br/>
-        
+      <h3>Inputs</h3>
+      <dl class="message-properties">
+        <dt>address <span class="property-type">string</span></dt>
+        <dd>The address to listen.</dd>
+      </dl>
+
+      <h3>Outputs</h3>
+      <dl class="message-properties">
+        <dt>transaction <span class="property-type">object</span></dt>
+        <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transaction_.transaction.html">Transaction</a> or <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transactionstatuserror_.transactionstatuserror.html">TransactionStatusError</a> object.</dd>
+      </dl>
+
     </p>
 </script>

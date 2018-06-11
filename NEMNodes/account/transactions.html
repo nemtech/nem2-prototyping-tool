@@ -20,16 +20,16 @@
         color: '#C5523C',
         defaults: {
             name: { value: "" },
-            publicKey: { value: "" },
+            publicKey: { value: "", validate: RED.validators.regex(/^([0-9A-Fa-f]{2}){32}$|^.{0}$/) },
             server: { value: "", type: "serverConfig" },
             allTransactions: { value: false },
-            pageSize: { value: 10 },
+            pageSize: { value: 10, validate: RED.validators.number() },
             transactionsType: { value: "transactions" }
 
         },
         inputs: 1,
         outputs: 1,
-        icon: "face.png",
+        icon: "Transaction-White.png",
         label: function () {
             return this.name || this.transactionsType || "transactions";
         },
@@ -82,26 +82,24 @@
 
 
 <script type="text/x-red" data-help-name="transactions">
-    <p>Get all transactions for the provided address. There is also the option for you to limit the number of results.<br/>
-    </p>
-</script>
+    <p>Get and filter transactions for the provided address. You can directly provide the public key here or simply link an account node. There is also the option for you to limit the number of results. </p>
 
-<script type="text/x-red" data-help-name="incomingTransactions">
-    <p>Get all incoming transactions for the provided address. There is also the option for you to limit the number of results.<br/>
-    </p>
-</script>
+        <h3>Inputs</h3>
+        <dl class="message-properties">
+            <dt>publicKey <span class="property-type">string</span></dt>
+            <dd>The account public key.</dd>
+        </dl>
 
-<script type="text/x-red" data-help-name="outgoingTransactions">
-    <p>Get all outgoing transactions for the provided address. There is also the option for you to limit the number of results.<br/>
-    </p>
-</script>
+        <h3>Outputs</h3>
+        <dl class="message-properties">
+            <dt>transactions<span class="property-type">object</span></dt>
+            <dd>Array of <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/modules/_model_transaction_transaction_.html">Transactions</a>.
+            </dd>
+        </dl>
+       <dl class="message-properties">
+            <dt>transactionsType<span class="property-type">string</span></dt>
+            <dd>transactions, incoming transactions, outgoing transactions, unconfirmed transactions or aggregate bonded transactions</a>.
+            </dd>
+        </dl>
 
-<script type="text/x-red" data-help-name="unconfirmedTransactions">
-    <p>Get all unconfirmed transactions for the provided address. There is also the option for you to limit the number of results.<br/>
-    </p>
-</script>
-
-<script type="text/x-red" data-help-name="aggregateBondedTransactions">
-    <p><br/> 
-    </p>
 </script>
