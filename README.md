@@ -42,6 +42,11 @@ NEM2 Prototyping Tool works on Node-RED 0.18.4.
 This project is developed and maintained by NEM Foundation. Contributions are welcome and appreciated. You can find [NEM Node-RED on GitHub][self];
 Feel free to start an issue or create a pull request. Check [CONTRIBUTING](CONTRIBUTING.md) before start.
 
+## Running tests
+
+Go to the folder where you stored the repository and run:
+`npm test`
+
 ## Getting help
 
 We use GitHub issues for tracking bugs and have limited bandwidth to address them.
