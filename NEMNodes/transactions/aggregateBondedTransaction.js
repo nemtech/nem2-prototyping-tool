@@ -16,30 +16,29 @@
 
 module.exports = function (RED) {
     const { AggregateTransaction, PublicAccount, NetworkType, Deadline } = require('nem2-sdk');
+    const validation = require('../lib/validation');
     function aggregateBonded(config) {
         RED.nodes.createNode(this, config);
         let context = this.context().flow;
         this.network = RED.nodes.getNode(config.network).network;
         this.trigger = config.trigger;
         let account = "";
-
         const node = this;
         context.set(node.id, []);
-
         this.on('input', function (msg) {
             try {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                //get publicKey from account(public and full account)
                 const publicKey = msg.nem.publicKey;
+                const network = node.network || msg.nem.network;
                 // save the transactions until the trigger arives
                 let savedTransactions = context.get(node.id) || [];
-                if (account === "" && msg.nem.account != undefined) {
+                if (!account && msg.nem.account) {
                     account = msg.nem.account;
                 }
-                if (msg.nem.transaction != undefined && publicKey != undefined) {
-                    const senderInfo = PublicAccount.createFromPublicKey(publicKey, NetworkType[node.network]);
+                if (msg.nem.transaction && validation.publicKeyValidate(publicKey)) {
+                    const senderInfo = PublicAccount.createFromPublicKey(publicKey, NetworkType[network]);
                     savedTransactions = savedTransactions.concat(msg.nem.transaction.toAggregate(senderInfo));
                     context.set(node.id, savedTransactions);
                 }
@@ -47,9 +46,8 @@ module.exports = function (RED) {
                     const aggregateTransaction = AggregateTransaction.createBonded(
                         Deadline.create(),
                         savedTransactions,
-                        NetworkType[node.network]
+                        NetworkType[network]
                     );
-                    console.log(account);
                     msg.nem.transaction = aggregateTransaction;
                     msg.nem.transactionType = "aggregateBonded";
                     msg.nem.account = account;
@@ -57,8 +55,6 @@ module.exports = function (RED) {
                     account = "";
                     node.send(msg);
                 }
-
-
             } catch (error) {
                 node.error(error);
             }

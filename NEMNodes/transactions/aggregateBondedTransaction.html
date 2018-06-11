@@ -20,15 +20,13 @@
         color: '#DC8B16',
         defaults: {
             name: { value: "" },
-            trigger: { value: undefined },
+            trigger: { value: "" },
             network: { value: "", type: "networkConfig" }
-
         },
         inputs: 1,
         outputs: 1,
-        icon: "face.png",
+        icon: "AggregateBond-White.png",
         label: function () {
-
             return this.name || "aggregateBonded transaction";
         },
         oneditprepare: function () {
@@ -50,10 +48,32 @@
                     <input type="text" id="node-input-name"placeholder="name (optional)">
                 </div>
 </script>
-
-
 <script type="text/x-red" data-help-name="aggregateBonded">
-    <p>Aggregate transactions contain multiple transactions that can be initiated by different accounts. The Aggregate transaction is used when all transactions need to be included in a block or none of them.<br>
-        In case that the aggregated transaction requires missing signatures from other participants, but was already announced to the network, then the transaction is considered "Aggregate bonded".<br/>
+
+    <p>
+    <a href="https://nemtech.github.io/concepts/aggregate-transaction.html">Aggregate transactions</a> merge multiple transactions into one, allowing trustless swaps, and other advanced logic. An aggregate transaction is bonded if not all cosigners have signed it, before announcing it to the network.
     </p>
+    <p>
+    <i>Note</i>: When announcing an aggregate bonded transaction, an account should first send and get confirmed a <a href="https://nemtech.github.io/concepts/aggregate-transaction.html#lock-funds-transaction">Lock Funds Transaction</a> for this aggregate with at least 10 XEM.
+    </p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>transaction <span class="property-type">object</span></dt>
+        <dd>The transaction <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transaction_.transaction.html"> object to be included as an <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_aggregatetransaction_.aggregatetransaction.html">innter transaction</a>. Link multiple inner transaction nodes.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>trigger <span class="property-type">string</span></dt>
+        <dd>Link an inject node with a payload, for example "finished". The trigger is used to create the aggregate transaction object after adding all inner transactions.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+   <dl class="message-properties">
+        <dt>transactionType <span class="property-type">string</span></dt>
+        <dd>aggregateBonded.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>transaction <span class="property-type">object</span></dt>
+        <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_aggregatetransaction_.aggregatetransaction.html">AggregateTransaction</a> object.</dd>
+    </dl>
 </script>
