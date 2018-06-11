@@ -16,39 +16,40 @@
 
 module.exports = function (RED) {
     const { Account, NetworkType } = require('nem2-sdk');
+    const validation = require('../lib/validation');
     function account(config) {
         RED.nodes.createNode(this, config);
         this.privateKey = config.privateKey;
         this.network = RED.nodes.getNode(config.network).network;
         let node = this;
-
-        this.on('input', function (msg) {
+        node.on('input', function (msg) {
             try {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
                 const privateKey = node.privateKey || msg.nem.privateKey;
-
-                if (privateKey) {
-                    const account = Account.createFromPrivateKey(privateKey, NetworkType[node.network]);
+                const network = node.network || msg.nem.network;
+                if (validation.privateKeyValidate(privateKey)) {
+                    const account = Account.createFromPrivateKey(privateKey, NetworkType[network]);
                     this.status({ text: account.address.pretty() });
                     msg.nem.account = account;
                     msg.nem.address = msg.nem.address ? msg.nem.address : account.address.address;
                     msg.nem.publicKey = msg.nem.publicKey ? msg.nem.publicKey : account.publicKey;
                     node.send(msg);
                 }
+                else if (privateKey) {
+                    node.error("private key is not correct : " + privateKey, msg);
+                }
                 else {
-                    this.status({ text: "private key not found" });
+                    node.error("private key is empty", msg);
                 }
 
             } catch (error) {
-                node.error(error);
+                node.error(error, msg);
             }
-
-
         });
         node.on('close', function () {
-            node.status();
+            node.status({});
         });
     }
     RED.nodes.registerType("account", account);

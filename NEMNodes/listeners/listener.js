@@ -16,6 +16,7 @@
 
 module.exports = function (RED) {
     const { Listener, Address } = require('nem2-sdk');
+    const validation = require('../lib/validation');
     function listener(config) {
         RED.nodes.createNode(this, config);
         this.host = RED.nodes.getNode(config.server).host;
@@ -38,22 +39,29 @@ module.exports = function (RED) {
                 else {
                     listener.open().then(() => {
                         const addressMsg = node.address || msg.nem.address;
-                        const address = Address.createFromRawAddress(addressMsg);
-                        msg.nem.address = address;
-                        listener[node.listenerType](address).subscribe((transaction) => {
-                            msg.nem.transaction = transaction;
-                            node.send(msg);
-                        });
-                        node.status({ fill: "green", shape: "dot", text: "connected" });
+                        if (validation.addressValidate(addressMsg)) {
+                            const address = Address.createFromRawAddress(addressMsg);
+                            listener[node.listenerType](address).subscribe((transaction) => {
+                                msg.nem.transaction = transaction;
+                                node.send(msg);
+                            });
+                            node.status({ fill: "green", shape: "dot", text: "connected" });
+                        }
+                        else {
+                            node.status({ fill: "red", shape: "ring", text: "error" });
+                            node.error("address is not correct:" + address, msg);
+                        }
                     },
                         err => {
                             node.status({ fill: "red", shape: "ring", text: "error" });
+                            node.error(err);
                         }
                     );
                 }
             }
-            catch (e) {
-                node.status({ fill: "red", shape: "dot", text: "error:" + e });
+            catch (error) {
+                node.status({ fill: "red", shape: "ring", text: "error:" + error });
+                node.error(error);
             }
         });
         node.on('close', function () {

@@ -15,20 +15,24 @@
  */
 
 module.exports = function (RED) {
-
+    const validation = require('../lib/validation');
     function serverConfig(n) {
         RED.nodes.createNode(this, n);
         this.url = n.url;
-        this.customServer = n.customServer;
+        this.customUrl = n.customUrl;
         this.port = n.port;
         this.network = RED.nodes.getNode(n.network).network;
         this.host = "";
-        if (!n.customServer == "") {
-            this.host = n.customServer + ":" + n.port;
+        if (!this.customUrl == "") {
+            this.host = this.customUrl + ":" + n.port;
         }
         else {
             this.host = n.url + ":" + n.port;
         }
+        if (!validation.hostValidate(this.host)) {
+            this.error("server configuration is not correct: " + this.host);
+        }
+
     }
     RED.nodes.registerType("serverConfig", serverConfig);
 };

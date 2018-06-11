@@ -16,10 +16,11 @@
 
 module.exports = function (RED) {
     const { RegisterNamespaceTransaction, Deadline, UInt64, NetworkType } = require('nem2-sdk');
+    const validation = require('../lib/validation');
     function createNamespace(config) {
         RED.nodes.createNode(this, config);
         this.namespace = config.namespace;
-        this.leaseTime = config.leaseTime;
+        this.duration = config.duration;
         this.network = RED.nodes.getNode(config.network).network;
         const node = this;
 
@@ -28,16 +29,22 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                const namespace = node.namespace || msg.nem.namespace || undefined;
-                const registerNamespaceTransaction = RegisterNamespaceTransaction.createRootNamespace(
-                    Deadline.create(),
-                    namespace,
-                    UInt64.fromUint(node.leaseTime),
-                    NetworkType[node.network]
-                );
-                msg.nem.transaction = registerNamespaceTransaction;
-                msg.nem.transactionType = "createNamespace";
-                node.send(msg);
+                const namespace = node.namespace || msg.nem.namespace;
+                const network = node.network || msg.nem.network;
+                if (validation.namespaceValidate(namespace)) {
+                    const registerNamespaceTransaction = RegisterNamespaceTransaction.createRootNamespace(
+                        Deadline.create(),
+                        namespace,
+                        UInt64.fromUint(node.duration),
+                        NetworkType[network]
+                    );
+                    msg.nem.transaction = registerNamespaceTransaction;
+                    msg.nem.transactionType = "createNamespace";
+                    node.send(msg);
+                }
+                else {
+                    node.error("namespace is not correct: " + namespace, msg);
+                }
 
             } catch (error) {
                 node.error(error);

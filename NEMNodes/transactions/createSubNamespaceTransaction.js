@@ -16,11 +16,11 @@
 
 module.exports = function (RED) {
     const { RegisterNamespaceTransaction, Deadline, NetworkType } = require('nem2-sdk');
+    const validation = require('../lib/validation');
     function createSubNamespace(config) {
         RED.nodes.createNode(this, config);
         this.namespace = config.namespace;
         this.subNamespace = config.subNamespace;
-        this.leaseTime = config.leaseTime;
         this.network = RED.nodes.getNode(config.network).network;
         const node = this;
 
@@ -30,18 +30,22 @@ module.exports = function (RED) {
                     msg.nem = {};
                 }
                 //get all the variables 
-                const namespace = node.namespace || msg.nem.namespace || undefined;
-                const subNamespace = node.subNamespace || msg.nem.subNamespace || undefined;
-
-                const createSubNamespaceTransaction = RegisterNamespaceTransaction.createSubNamespace(
-                    Deadline.create(),
-                    subNamespace,
-                    namespace,
-                    NetworkType[node.network]);
-                msg.nem.transaction = createSubNamespaceTransaction;
-                msg.nem.transactionType = "createSubNamespace";
-                node.send(msg);
-
+                const namespace = node.namespace || msg.nem.namespace;
+                const subNamespace = node.subNamespace || msg.nem.subNamespace;
+                const network = node.network || msg.nem.network;
+                if (validation.namespaceValidate(subNamespace)) {
+                    const createSubNamespaceTransaction = RegisterNamespaceTransaction.createSubNamespace(
+                        Deadline.create(),
+                        subNamespace,
+                        namespace,
+                        NetworkType[network]);
+                    msg.nem.transaction = createSubNamespaceTransaction;
+                    msg.nem.transactionType = "createSubNamespace";
+                    node.send(msg);
+                }
+                else {
+                    node.error("subNamespace is not correct: " + subNamespace);
+                }
             } catch (error) {
                 node.error(error);
             }

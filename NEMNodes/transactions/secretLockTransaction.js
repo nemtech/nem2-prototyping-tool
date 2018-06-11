@@ -16,6 +16,7 @@
 
 module.exports = function (RED) {
     const { SecretLockTransaction, Deadline, Mosaic, MosaicId, UInt64, HashType, Address, NetworkType } = require('nem2-sdk');
+    const validation = require('../lib/validation');
     function secretLock(config) {
         RED.nodes.createNode(this, config);
         this.secret = config.secret;
@@ -25,6 +26,7 @@ module.exports = function (RED) {
         this.lockTime = config.lockTime;
         this.network = config.network;
         this.address = config.address;
+        this.amount = config.amount;
         this.network = RED.nodes.getNode(config.network).network;
         const node = this;
 
@@ -37,21 +39,30 @@ module.exports = function (RED) {
                 const mosaic = node.mosaic || msg.nem.mosaic;
                 const secret = node.secret || msg.nem.secret;
                 const address = node.address || msg.nem.address;
+                const network = node.network || msg.nem.network;
 
                 //hash secret with hashtype to do
                 const hashedSecret = secret;
-                const secretLockTransaction = SecretLockTransaction.create(
-                    Deadline.create(),
-                    new Mosaic(new MosaicId(namespace + ':' + mosaic), UInt64.fromUint(10)),
-                    UInt64.fromUint(node.lockTime),
-                    HashType[node.hashType],
-                    hashedSecret,
-                    Address.createFromRawAddress(address),
-                    NetworkType[node.network]
-                );
-                msg.nem.transaction = secretLockTransaction;
-                msg.nem.transactionType = "secretLock";
-                node.send(msg);
+                if (validation.addressValidate(address) && validation.mosaicFullNameValidate(mosaic)) {
+                    const secretLockTransaction = SecretLockTransaction.create(
+                        Deadline.create(),
+                        new Mosaic(new MosaicId(mosaic), UInt64.fromUint(node.amount)),
+                        UInt64.fromUint(node.lockTime),
+                        HashType[node.hashType],
+                        hashedSecret,
+                        Address.createFromRawAddress(address),
+                        NetworkType[network]
+                    );
+                    msg.nem.transaction = secretLockTransaction;
+                    msg.nem.transactionType = "secretLock";
+                    node.send(msg);
+                }
+                else if(!validation.addressValidate(address)){
+                    node.error("address:\"" + address + "\" is not correct", msg)
+                }
+                else{
+                    node.error("mosaic:\"" + mosaic + "\" is not correct", msg)
+                }
 
             } catch (error) {
                 node.error(error);

@@ -16,6 +16,7 @@
 
 module.exports = function (RED) {
     const { MosaicDefinitionTransaction, Deadline, MosaicProperties, UInt64, NetworkType } = require('nem2-sdk');
+    const validation = require('../lib/validation');
     function createMosaicDefinition(config) {
         RED.nodes.createNode(this, config);
         this.namespace = config.namespace;
@@ -24,7 +25,7 @@ module.exports = function (RED) {
         this.transferable = config.transferable;
         this.levyMutable = config.levyMutable;
         this.divisibility = config.divisibility;
-        this.leaseTime = config.leaseTime;
+        this.duration = config.duration;
         this.network = RED.nodes.getNode(config.network).network;
         const node = this;
         this.on('input', function (msg) {
@@ -32,24 +33,32 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                const namespace = node.namespace || msg.nem.namespace || undefined;
-                const mosaic = node.mosaic || msg.nem.mosaic || undefined;
-                const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
-                    Deadline.create(),
-                    mosaic,
-                    namespace,
-                    MosaicProperties.create({
-                        supplyMutable: node.supplyMutable,
-                        transferable: node.transferable,
-                        levyMutable: false,
-                        divisibility: node.divisibility,
-                        duration: UInt64.fromUint(node.leaseTime),
-                    }),
-                    NetworkType[node.network]);
-                msg.nem.transaction = mosaicDefinitionTransaction;
-                msg.nem.transactionType = "createMosaicDefinition";
-                node.send(msg);
-
+                const namespace = node.namespace || msg.nem.namespace;
+                const mosaic = node.mosaic || msg.nem.mosaic;
+                const network = node.network || msg.nem.network;
+                if (validation.namespaceFullNameValidate(namespace) && validation.mosaicValidate(mosaic)) {
+                    const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
+                        Deadline.create(),
+                        mosaic,
+                        namespace,
+                        MosaicProperties.create({
+                            supplyMutable: node.supplyMutable,
+                            transferable: node.transferable,
+                            levyMutable: false,
+                            divisibility: node.divisibility,
+                            duration: UInt64.fromUint(node.duration),
+                        }),
+                        NetworkType[network]);
+                    msg.nem.transaction = mosaicDefinitionTransaction;
+                    msg.nem.transactionType = "createMosaicDefinition";
+                    node.send(msg);
+                }
+                else if(!validation.namespaceFullNameValidate(namespace)){
+                    node.error("namespace: \"" + namespace + "\" is not correct", msg);
+                }
+                else{
+                    node.error("mosaic: \"" + mosaic + "\" is not correct", msg);
+                }
             } catch (error) {
                 node.error(error);
             }

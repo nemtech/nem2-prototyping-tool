@@ -26,12 +26,13 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                const account = Account.generateNewAccount(NetworkType[node.network])
+                const network = node.network || msg.nem.network;
+                const account = Account.generateNewAccount(NetworkType[network])
                 msg.nem.privateKey = account.privateKey;
                 node.send(msg);
 
             } catch (error) {
-                node.error(error);
+                node.error(error, msg);
             }
 
         });
