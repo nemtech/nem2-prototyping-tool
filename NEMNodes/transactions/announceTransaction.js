@@ -16,14 +16,13 @@
 
 module.exports = function (RED) {
     const { TransactionHttp } = require('nem2-sdk');
-    function announceTransaction(config) {
+    function announce(config) {
         RED.nodes.createNode(this, config);
         this.host = RED.nodes.getNode(config.server).host;
         this.announceType = config.announceType;
         let node = this;
 
         this.on('input', function (msg) {
-
             try {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
@@ -36,9 +35,7 @@ module.exports = function (RED) {
             } catch (error) {
                 node.error(error);
             }
-
         });
-
     }
-    RED.nodes.registerType("announce transaction", announceTransaction);
+    RED.nodes.registerType("announce", announce);
 };
