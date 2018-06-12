@@ -44,12 +44,10 @@ module.exports = function (RED) {
                     else {
                         node.error("server and/or mosaic is empty", msg);
                     }
-
                 }
             } catch (error) {
                 node.error(error, msg)
             }
-
         });
     }
     RED.nodes.registerType("mosaicInfo", mosaicInfo);
