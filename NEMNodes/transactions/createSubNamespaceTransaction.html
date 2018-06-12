@@ -20,7 +20,7 @@
         color: '#F4B457',
         defaults: {
             name: { value: "" },
-            namespace: { value: "", validate: RED.validators.regex(/^([0-9a-z_\-]{0,64})(:[0-9a-z_\-]{1,64}){0,1}$/) },
+            namespace: { value: "", validate: RED.validators.regex(/^([0-9a-z_\-]{0,64})(\.[0-9a-z_\-]{1,64}){0,1}$/) },
             subNamespace: { value: "", validate: RED.validators.regex(/^([0-9 a-z _ \-]){1,64}$/) },
             network: { value: "", type: "networkConfig" }
 
