@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-nem2",
-    "version": "0.9.0",
+    "version": "0.9.6",
     "description": "NEM blockchain nodes",
     "homepage": "https://nem.io",
     "license": "Apache-2.0",
@@ -9,6 +9,7 @@
         "url": "https://github.com/nemtech/nem2-prototyping-tool.git"
     },
     "keywords": [
+        "node-red",
         "nem",
         "nem2",
         "blockchain",
@@ -37,14 +38,16 @@
             "createSubNamespace": "NEMNodes/transactions/createSubNamespaceTransaction.js",
             "createMosaicDefinition": "NEMNodes/transactions/createMosaicDefinitionTransaction.js",
             "mosaicSupplyChange": "NEMNodes/transactions/mosaicSupplyChangeTransaction.js",
+            "modifyMultisigAccountTransaction":"NEMNodes/transactions/modifyMultisigAccountTransaction.js",
             "lockFund": "NEMNodes/transactions/lockFundTransaction.js",
             "secretLock": "NEMNodes/transactions/secretLockTransaction.js",
             "secretProof": "NEMNodes/transactions/secretProofTransaction.js",
             "configMultisig": "NEMNodes/transactions/configMultisigTransaction.js",
             "cosignature": "NEMNodes/transactions/cosignatureTransaction.js",
             "newBlock": "NEMNodes/listeners/newBlock.js",
+            "listener": "NEMNodes/listeners/listener.js",
             "mosaicInfo": "NEMNodes/utility/mosaicInfo.js",
-            "listener": "NEMNodes/listeners/listener.js"
+            "input":"NEMNodes/utility/input.js"
         }
     },
     "dependencies": {
