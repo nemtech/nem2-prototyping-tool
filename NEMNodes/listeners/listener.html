@@ -98,28 +98,31 @@
 
 <script type="text/x-red" data-help-name="listener">
     <p>This opens a <a href="https://nemtech.github.io/concepts/listener.html">websocket</a> connection, which returns a stream of events for a specific address. Specify the type in the configuration.<br/>
-        Available configurations for events:
-        <ul>
-            <li>Confirmed transaction</li>
-            <li>Unconfirmed transaction added to the stream.</li>
-            <li>Unconfirmed transaction removed from the stream.</li>
-            <li>Unconfirmed transaction removed from the stream.</li>
-            <li>AggregateBonded transaction added to the stream.</li>
-            <li>AggregateBonded transaction removed from the stream.</li>
-            <li>Status error message for each transaction that contains an error.</li>
-            <li>Cosignature added for each time a cosignatory signed a transaction.</li>
-        </ul>
-      <h3>Inputs</h3>
-      <dl class="message-properties">
+    </p>
+
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>server <span class="property-type">object</span></dt>
+        <dd>The server configuration.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>listener type <span class="property-type">string</span></dt>
+        <dd>confirmed transaction, unconfirmed transaction, unconfirmedRemoved hash, aggregateBonded added, aggregateBondedRemoved hash status TransactionStatus error or cosignature added.</dd>
+    </dl>
+    <dl class="message-properties">
         <dt>address <span class="property-type">string</span></dt>
         <dd>The address to listen.</dd>
-      </dl>
+    </dl>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>address <span class="property-type">string</span></dt>
+        <dd>The address to listen.</dd>
+    </dl>
 
-      <h3>Outputs</h3>
-      <dl class="message-properties">
+    <h3>Outputs</h3>
+    <dl class="message-properties">
         <dt>transaction <span class="property-type">object</span></dt>
         <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transaction_.transaction.html">Transaction</a> or <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transactionstatuserror_.transactionstatuserror.html">TransactionStatusError</a> object.</dd>
-      </dl>
+    </dl>
 
-    </p>
 </script>

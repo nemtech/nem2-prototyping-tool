@@ -68,13 +68,30 @@
 <script type="text/x-red" data-help-name="mosaicSupplyChange">
     <p><a href="https://nemtech.github.io/concepts/mosaic.html#mosaic-supply-change-transaction">MosaicSupplyChangeTransaction</a> is used to change the supply of a mosaic. This is also necessary, after a mosaic is created for the first time, increasing the inital supply of zero.
     </p>
+
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>network <span class="property-type">object</span></dt>
+        <dd>The network configuration.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>mosaic <span class="property-type">string</span></dt>
+        <dd>The mosaic name.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>amount <span class="property-type">number</span></dt>
+        <dd>The amount to increase or decrease.</dd>
+    </dl>
+   <dl class="message-properties">
+        <dt>direction <span class="property-type">string</span></dt>
+        <dd>increase or decrease.</dd>
+    </dl>
     <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>mosaic <span class="property-type">string</span></dt>
         <dd>The mosaic name.</dd>
     </dl>
-
-    <h3>Outputs</h3>
+   <h3>Outputs</h3>
    <dl class="message-properties">
         <dt>transactionType <span class="property-type">string</span></dt>
         <dd>mosaicSupplyChange.</dd>

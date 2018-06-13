@@ -89,41 +89,69 @@
     <p> Use this node to prepare a <a href="https://nemtech.github.io/concepts/transfer-transaction.html">TransferTransaction</a>.
         Transfer transactions are used to send mosaics and messages between accounts.</p>
 
-        <h3>Inputs</h3>
-        <dl class="message-properties">
-            <dt>recipient <span class="property-type">string</span></dt>
-            <dd>The address of the recipient.</dd>
-        </dl>
-        <dl class="message-properties">
-            <dt>message <span class="property-type">string</span></dt>
-        <dd>The transaction message.</dd>
-        </dl>
-        <dl class="message-properties">
-            <dt>publicKey <span class="property-type">string</span></dt>
-            <dd>The public key of sender, only when "to aggregate" is selected.</dd>
-        </dl>
-        <dl class="message-properties">
-            <dt>mosaic <span class="property-type">string</span></dt>
-            <dd>The mosaic name to transfer.</dd>
-        </dl>
-        <dl class="message-properties">
-            <dt>amount <span class="property-type">string</span></dt>
-            <dd>The mosaic amount, can be zero.</dd>
-        </dl>
-
-        <h3>Outputs</h3>
-        <dl class="message-properties">
-            <dt>transactionType <span class="property-type">string</span></dt>
-            <dd>transfer.</dd>
-        </dl>
-        <dl class="message-properties">
-            <dt>transaction <span class="property-type">object</span></dt>
-            <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transfertransaction_.transfertransaction.html">TransferTransaction</a> object.</dd>
-        </dl>
-        <dl class="message-properties">
-            <dt>publicKey <span class="property-type">string</span></dt>
-            <dd>The public key of sender, only when "to aggregate" is selected.</dd>
-        </dl>
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>network <span class="property-type">object</span></dt>
+        <dd>The network configuration.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>recipient <span class="property-type">string</span></dt>
+        <dd>The address of the recipient.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>to aggregate <span class="property-type">boolean</span></dt>
+        <dd>Set it to true if it will be inside an aggregate transaction.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>public key send from<span class="property-type">string</span></dt>
+        <dd>The public key of sender, only when "to aggregate" is selected.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>message <span class="property-type">string</span></dt>
+    <dd>The transaction message.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>mosaic <span class="property-type">string</span></dt>
+        <dd>The mosaic name to transfer.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>amount <span class="property-type">string</span></dt>
+        <dd>The mosaic amount, can be zero.</dd>
+    </dl>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>recipient <span class="property-type">string</span></dt>
+        <dd>The address of the recipient.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>message <span class="property-type">string</span></dt>
+    <dd>The transaction message.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>publicKey <span class="property-type">string</span></dt>
+        <dd>The public key of sender, only when "to aggregate" is selected.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>mosaic <span class="property-type">string</span></dt>
+        <dd>The mosaic name to transfer.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>amount <span class="property-type">string</span></dt>
+        <dd>The mosaic amount, can be zero.</dd>
+    </dl>
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>transactionType <span class="property-type">string</span></dt>
+        <dd>transfer.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>transaction <span class="property-type">object</span></dt>
+        <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transfertransaction_.transfertransaction.html">TransferTransaction</a> object.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>publicKey <span class="property-type">string</span></dt>
+        <dd>The public key of sender, only when "to aggregate" is selected.</dd>
+    </dl>
 
 
 </script>

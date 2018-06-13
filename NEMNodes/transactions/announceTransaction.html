@@ -53,25 +53,21 @@
 
 
 <script type="text/x-red" data-help-name="announce">
-    <p>Send the signed transaction to the node.<br>
-        Please select among the following transaction types:
-        <ul>
-            <li> transaction (signed)
-            <li> aggregate bonded (signed with missing signatures)
-            <li> aggregate bonded cosignature (cosignature signed transaction of an already announced transaction)
-        </ul>
-        <h3>Reference</h3>
-            <ul>
-                <li><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_infrastructure_transactionhttp_.transactionhttp.html#announce">SDK Reference Typescript/Javascript</a></li>
-                <li><a href="https://nemtech.github.io/concepts/transaction.html">NEM Developer Documentation</a></li>
-            </ul>
-    </p>
+    <p>Send the signed transaction to the node.</p>
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>server <span class="property-type">object</span></dt>
+        <dd>The server configuration.</dd>
+    </dl>
+     <dl class="message-properties">
+        <dt>announce type <span class="property-type">string</span></dt>
+        <dd>transactions, aggregateBonded transaction, or aggregateBonded cosignature transaction.</dd>
+    </dl>
     <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>signedTransaction <span class="property-type">object</span></dt>
         <dd>The <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_signedtransaction_.signedtransaction.html">SignedTransaction</a> object.</dd>
     </dl>
-
     <h3>Outputs</h3>
     <dl class="message-properties">
         <dt>announced<span class="property-type">object</span></dt>
