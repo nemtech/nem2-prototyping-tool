@@ -1,0 +1,105 @@
+/*
+ * Copyright 2018 NEM
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var should = require("should");
+var helper = require("node-red-node-test-helper/index.js");
+var createMosaicDefinitionTransactionNode = require("../../NEMNodes/transactions/createMosaicDefinitionTransaction.js");
+var networkConfigNode = require("../../NEMNodes/config/networkConfig.js");
+
+helper.init(require.resolve('node-red'));
+
+describe('createMosaicDefinitionTransaction Node', function () {
+    afterEach(function () {
+        helper.unload();
+    });
+    const configuredFlow =
+        [{ id: "n1", type: "networkConfig", network: "MIJIN_TEST" },
+        { id: "n2", type: "createMosaicDefinition", network: "n1", transferable: true, duration: 480, name: "createMosaicDefinition", wires: [["n3"]] },
+        { id: "n3", type: "helper" }];
+
+    it('should be loaded', function (done) {
+        helper.load([createMosaicDefinitionTransactionNode, networkConfigNode], configuredFlow, function () {
+            var n2 = helper.getNode("n2");
+            n2.should.have.property('name', 'createMosaicDefinition');
+            done();
+        });
+    });
+
+    it('should generate a createMosaicDefinitionTransaction', function (done) {
+        helper.load([createMosaicDefinitionTransactionNode, networkConfigNode], configuredFlow, function () {
+            var n2 = helper.getNode("n2");
+            var n3 = helper.getNode("n3");
+            n3.on("input", function (msg) {
+                try {
+                    msg.nem.transaction.type.should.be.eql(16717);
+                    msg.nem.transaction.networkType.should.be.eql(144);
+                    msg.nem.transaction.parentId.id.should.be.eql({ lower: 3461314181, higher: 365727591, });
+                    msg.nem.transaction.mosaicId.id.should.be.eql({ lower: 1594054832, higher: 2805772993 });
+                    msg.nem.transaction.mosaicName.should.be.eql("test-mosaic");
+                    msg.nem.transaction.mosaicProperties.duration.should.be.eql({ lower: 480, higher: 0 });
+                    msg.nem.transaction.mosaicProperties.transferable.should.be.true();
+                    done();
+                } catch (error) {
+                    done(error);
+                }
+            });
+            n2.receive({ nem: { namespace: "test.namespace", mosaic: "test-mosaic" } });
+        });
+    });
+
+    it('should throw exception when the namespace is wrong', function (done) {
+        helper.load([createMosaicDefinitionTransactionNode, networkConfigNode], configuredFlow, function () {
+            var n2 = helper.getNode("n2");
+            n2.receive({ nem: { namespace: "test-namespace.to.much.subnamespaces", mosaic: "test-mosaic" } });
+            try {
+                helper.log().called.should.be.true();
+                var logEvents = helper.log().args.filter(function (evt) {
+                    return evt[0].type == "createMosaicDefinition";
+                });
+                logEvents.should.have.length(1);
+                var msg = logEvents[0][0];
+                msg.should.have.property('level', helper.log().ERROR);
+                msg.should.have.property('id', 'n2');
+                msg.should.have.property('type', 'createMosaicDefinition');
+                msg.should.have.property('msg', 'namespace: "test-namespace.to.much.subnamespaces" is not correct');
+                done();
+            } catch (error) {
+                done(error);
+            }
+        });
+    });
+
+    it('should throw exception when the mosaic is wrong', function (done) {
+        helper.load([createMosaicDefinitionTransactionNode, networkConfigNode], configuredFlow, function () {
+            var n2 = helper.getNode("n2");
+            n2.receive({ nem: { namespace: "test-namespace.token", mosaic: "test-mosaic:" } });
+            try {
+                helper.log().called.should.be.true();
+                var logEvents = helper.log().args.filter(function (evt) {
+                    return evt[0].type == "createMosaicDefinition";
+                });
+                logEvents.should.have.length(1);
+                var msg = logEvents[0][0];
+                msg.should.have.property('level', helper.log().ERROR);
+                msg.should.have.property('id', 'n2');
+                msg.should.have.property('type', 'createMosaicDefinition');
+                msg.should.have.property('msg', 'mosaic: "test-mosaic:" is not correct');
+                done();
+            } catch (error) {
+                done(error);
+            }
+        });
+    });
+});

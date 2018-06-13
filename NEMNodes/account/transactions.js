@@ -16,10 +16,10 @@
 
 module.exports = function (RED) {
     const { PublicAccount, AccountHttp, QueryParams, NetworkType } = require('nem2-sdk');
+    const validation = require('../lib/validation');
     function transactions(config) {
         RED.nodes.createNode(this, config);
         this.host = RED.nodes.getNode(config.server).host;
-        this.network = RED.nodes.getNode(config.server).network;
         this.publicKey = config.publicKey;
         this.pageSize = config.pageSize;
         this.transactionsType = config.transactionsType;
@@ -31,37 +31,41 @@ module.exports = function (RED) {
                     msg.nem = {};
                 }
                 const publicKey = node.publicKey || msg.nem.publicKey;
-                const publicAccount = msg.nem.publicAccount || PublicAccount.createFromPublicKey(publicKey, NetworkType[node.network]);
-                const accountHttp = new AccountHttp(node.host);
-
-                if (typeof msg.nem === "undefined") {
-                    msg.nem = {};
-                }
-                if (node.allTransactions) {
-                    node.pageSize = 100;
-                }
-                accountHttp[node.transactionsType](publicAccount, new QueryParams(node.pageSize)).subscribe(transactions => {
+                if (validation.publicKeyValidate(publicKey)) {
+                    const publicAccount = msg.nem.publicAccount || PublicAccount.createFromPublicKey(publicKey, NetworkType[node.network]);
+                    const accountHttp = new AccountHttp(node.host);
                     if (node.allTransactions) {
-                        getNextTransactions(transactions, transactions[transactions.length - 1].transactionInfo.id, node.transactionsType);
+                        node.pageSize = 100;
                     }
-                    else {
-                        msg.nem.transactions = transactions;
-                        msg.nem.transactionType = node.transactionType;
-                        node.send(msg);
-                    }
-                });
-                function getNextTransactions(transactionList, transactionId, transactionType) {
-                    accountHttp[transactionType](publicAccount, new QueryParams(node.pageSize, transactionId)).subscribe(transactions => {
-                        transactionList = transactionList.concat(transactions);
-                        if (transactions.length >= node.pageSize) {
-                            getNextTransactions(transactionList, transactions[transactions.length - 1].transactionInfo.id, transactionType);
+                    accountHttp[node.transactionsType](publicAccount, new QueryParams(node.pageSize)).subscribe(transactions => {
+                        if (node.allTransactions) {
+                            getNextTransactions(transactions, transactions[transactions.length - 1].transactionInfo.id, node.transactionsType);
                         }
                         else {
-                            msg.nem.transactions = transactionList;
-                            msg.nem.transactionType = transactionType;
+                            msg.nem.transactions = transactions;
+                            msg.nem.transactionsType = node.transactionsType;
                             node.send(msg);
                         }
                     });
+                    function getNextTransactions(transactionList, transactionId, transactionsType) {
+                        accountHttp[transactionsType](publicAccount, new QueryParams(node.pageSize, transactionId)).subscribe(transactions => {
+                            transactionList = transactionList.concat(transactions);
+                            if (transactions.length >= node.pageSize) {
+                                getNextTransactions(transactionList, transactions[transactions.length - 1].transactionInfo.id, transactionsType);
+                            }
+                            else {
+                                msg.nem.transactions = transactionList;
+                                msg.nem.transactionType = transactionType;
+                                node.send(msg);
+                            }
+                        });
+                    }
+                }
+                else if (publicKey) {
+                    node.error("public key is not correct : " + publicKey, msg);
+                }
+                else {
+                    node.error("public key is empty", msg);
                 }
             } catch (error) {
                 node.error(error);

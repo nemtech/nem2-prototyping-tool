@@ -15,7 +15,7 @@
 -->
 
 <script type="text/javascript">
-    RED.nodes.registerType('announce transaction', {
+    RED.nodes.registerType('announce', {
         category: 'NEM Transactions',
         color: '#32a8e4',
         defaults: {
@@ -25,14 +25,14 @@
         },
         inputs: 1,
         outputs: 1,
-        icon: "face.png",
+        icon: "Announce-Transaction-White.png",
         label: function () {
-            return this.name || this.announceType || "announce transaction";
+            return this.name || this.announceType+" transaction" || "announce transaction";
         }
     });
 </script>
 
-<script type="text/x-red" data-template-name="announce transaction">  
+<script type="text/x-red" data-template-name="announce">  
     <div class="form-row">
         <label for="node-input-announceType"><i></i>announce type</label>
         <select type="text" id="node-input-announceType">
@@ -52,7 +52,7 @@
 </script>
 
 
-<script type="text/x-red" data-help-name="announce transaction">
+<script type="text/x-red" data-help-name="announce">
     <p>Send the signed transaction to the node.<br>
         Please select among the following transaction types:
         <ul>
@@ -66,4 +66,15 @@
                 <li><a href="https://nemtech.github.io/concepts/transaction.html">NEM Developer Documentation</a></li>
             </ul>
     </p>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>signedTransaction <span class="property-type">object</span></dt>
+        <dd>The <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_signedtransaction_.signedtransaction.html">SignedTransaction</a> object.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>announced<span class="property-type">object</span></dt>
+        <dd><a href="TransactionAnnounceResponse>">account</a> object.</dd>
+    </dl>
 </script>

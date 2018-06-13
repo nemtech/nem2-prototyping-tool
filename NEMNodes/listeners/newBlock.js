@@ -42,9 +42,9 @@ module.exports = function (RED) {
                     });
                 }
             }
-            catch (e) {
-                node.status({ fill: "red", shape: "dot", text: "error:" + e });
-                console.error(e);
+            catch (error) {
+                node.status({ fill: "red", shape: "ring", text: "error:" + error });
+                node.error(error);
             }
         });
         node.on('close', function () {

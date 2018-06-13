@@ -20,18 +20,18 @@
         color: '#F2A12D',
         defaults: {
             name: { value: "" },
-            namespace: { value: undefined },
-            mosaic: { value: undefined },
+            namespace: { value: "", validate: RED.validators.regex(/^([0-9a-z_\-]{0,64})(\.[0-9a-z_\-]{1,64}){0,2}$/) },
+            mosaic: { value: "", validate: RED.validators.regex(/^([0-9a-z_\-]){0,64}$/) },
             supplyMutable: { value: true },
             transferable: { value: true },
             levyMutable: { value: false },
-            divisibility: { value: 0 },
-            leaseTime: { value: 0 },
+            divisibility: { value: 0, validate: RED.validators.regex(/^([0-6])$/) },
+            duration: { value: 0, validate: RED.validators.number() },
             network: { value: "", type: "networkConfig" }
         },
         inputs: 1,
         outputs: 1,
-        icon: "mosaic.png",
+        icon: "CreateMosaic-White.png",
         label: function () {
 
             return this.name || "create mosaic definition transaction";
@@ -48,11 +48,11 @@
     </div>
                 <div class="form-row" id="node-input-namespaceView">
                         <label for="node-input-namespace"><i></i>Namespace</label>
-                        <input type="text" id="node-input-namespace" placeholder="nem">
+                        <input type="text" id="node-input-namespace" placeholder="namespace.subnamespace">
                     </div>
                     <div class="form-row"id="node-input-mosaicView" >
                         <label for="node-input-mosaic"><i></i> Mosaic</label>
-                        <input type="text" id="node-input-mosaic" placeholder="xem">
+                        <input type="text" id="node-input-mosaic" placeholder="mosaic">
                     </div>
                     <div class="form-row" id="node-input-transferableView">
                             <label for="node-input-transferable"><i></i> transferable</label>
@@ -66,9 +66,9 @@
                             <label for="node-input-divisibility"><i></i> divisibility</label>
                             <input type="number" id="node-input-divisibility">
                         </div>
-                <div class="form-row" id="node-input-leaseTimeView">
-                        <label for="node-input-leaseTime"><i></i> lease time</label>
-                        <input type="number" id="node-input-leaseTime">
+                <div class="form-row" id="node-input-durationView">
+                        <label for="node-input-duration"><i></i> duration (expressed in blocks)</label>
+                        <input type="number" id="node-input-duration">
                     </div>
                     <div class="form-row" id="node-input-nameView">
                         <label for="node-input-name"><i class="icon-tag"></i>name</label>
@@ -78,15 +78,36 @@
 
 
 <script type="text/x-red" data-help-name="createMosaicDefinition">
-    <p>This node is used to define a mosaic before it is created.
+    <p>Use this node to define a <a href="https://nemtech.github.io/concepts/mosaic.html#mosaic-definition-transaction">mosaic definition transaction</a>.</p>
+       Mosaics are fixed assets on the NEM blockchain that can represent a set of multiple identical things that do not change. A mosaic is always linked to a namespace, like a file hosted on a domain.
+
+       The behavior of a mosaic can be customized by a set of properties. Supported properties are:
+
        <ul>
-           <li>Namespace: provide the full reference where the mosaic will exist. E.g.: rootnamespace or rootnamespace.subnamespace or rootnamespace.subnamespace.subnamespace. An account must rent at least one root namespace, which the mosaic definition can then refer to.</li>
-           <li>Mosaic: name your mosaic, up to a size limit of 64 characters; must be unique under the domain name.</li>
            <li>Transferable: choose whether the mosaic can be transferred to and from arbitrary accounts, or only allowing the mosaic to go back to the creator, once transferred.</li>
            <li>Supply mutable: when selected, the mosaic supply can be changed at a later point in time.</li>
            <li>Divisibility: determines up to what decimal place the mosaic can be divided. Divisibility of 3 means that a mosaic can be divided into smallest parts of 0.001 mosaics. The divisibility must be in the range of 0 and 6.</li>
-           <li>Lease time: The number of confirmed blocks you would like to rent the space for the mosaic. Should be inferior or equal to namespace duration.</li>
-           <li>Name: of the node-red node</li>
+           <li>Duration: The number of confirmed blocks you would like to rent the space for the mosaic.</li>
        </ul>
     </p>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>namespace <span class="property-type">string</span></dt>
+        <dd>The namespace name.</dd>
+    </dl>
+
+    <dl class="message-properties">
+        <dt>mosaic <span class="property-type">string</span></dt>
+        <dd>The mosaic name.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+   <dl class="message-properties">
+        <dt>transactionType <span class="property-type">string</span></dt>
+        <dd>createMosaicDefinition.</dd>
+   </dl>
+   <dl class="message-properties">
+        <dt>transaction <span class="property-type">object</span></dt>
+        <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_mosaicdefinitiontransaction_.mosaicdefinitiontransaction.html">MosaicDefinitionTransaction</a> object.</dd>
+   </dl>
 </script>

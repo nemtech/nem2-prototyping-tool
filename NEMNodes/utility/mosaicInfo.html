@@ -1,0 +1,100 @@
+<!-- 
+ * Copyright 2018 NEM
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('mosaicInfo', {
+        category: 'NEM Utility',
+        color: '#C5523C',
+        defaults: {
+            name: { value: "" },
+            mosaic: { value: "",validate: RED.validators.regex(/^([0-9a-z_\-]{1,64})((\.([0-9a-z_\-]{1,64})){0,2})(:[0-9a-z_\-]{1,64}){1}$|^.{0}$/) },
+            server: { value: "", type: "serverConfig" },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "Mosaic-Info-White.png",
+        label: function () {
+            return this.name || "mosaic info";
+        },
+        button: {
+            enabled: function () {
+                return !this.changed
+            },
+            onclick: function () {
+                if (this.changed) {
+                    return RED.notify(RED._("notification.warning", { message: RED._("notification.warnings.undeployedChanges") }), "warning");
+                }
+                if (!this.mosaic.trim()) {
+                    return RED.notify(RED._("warning: mosaic not defined"), "warning");
+                }
+                var label = (this.name || "mosaicInfo");
+                var node = this;
+                $.ajax({
+                    url: "inject/" + this.id,
+                    type: "POST",
+                    success: function (resp, textStatus, xhr) {
+                        RED.notify(node._("succesfully started " + label), "success");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status == 404) {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.not-deployed") }), "error");
+                        } else if (jqXHR.status == 500) {
+                            RED.notify(node._("common.notification.error", { message: node._("inject.errors.failed") }), "error");
+                        } else if (jqXHR.status == 0) {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.no-response") }), "error");
+                        } else {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.unexpected", { status: jqXHR.status, message: textStatus }) }), "error");
+                        }
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="mosaicInfo">
+    
+    <div class="form-row">
+        <label for="node-input-server"><i class="icon-globe"></i> Server</label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-mosaic"><i></i> Mosaic</label>
+        <input type="text" id="node-input-mosaic" placeholder="namespace:mosaic">
+    </div>
+    <div class="form-row" id="node-input-nameView">
+        <label for="node-input-name"><i class="icon-tag"></i>name</label>
+        <input type="text" id="node-input-name"placeholder="name (optional)">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="mosaicInfo">
+    <p>
+        Get the <a href="https://nemtech.github.io/concepts/mosaic.html">mosaic</a> information given a mosaic name.
+    </p>
+      <h3>Inputs</h3>
+      <dl class="message-properties">
+        <dt>mosaic <span class="property-type">string</span></dt>
+        <dd>The mosaic name.</dd>
+      </dl>
+     <h3>Outputs</h3>
+      <dl class="message-properties">
+        <dt>mosaicInfo <span class="property-type">object</span></dt>
+        <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_mosaic_mosaicinfo_.mosaicinfo.html">MosaicInfo</a> object.</dd>
+      </dl>
+
+
+</script>

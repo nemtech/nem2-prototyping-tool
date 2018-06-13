@@ -20,14 +20,13 @@
         color: '#F6AA9B',
         defaults: {
             name: { value: "" },
-            privateKey: { value: "" },
+            privateKey: { value: "", validate: RED.validators.regex(/^([0-9A-Fa-f]{2}){32}$|^.{0}$/) },
             coSign: { value: false },
             network: { value: "", type: "networkConfig" }
-
         },
         inputs: 1,
         outputs: 1,
-        icon: "sign.png",
+        icon: "Sign-Transaction-White.png",
         label: function () {
             return this.name || "sign transaction";
         }
@@ -55,6 +54,20 @@
 
 
 <script type="text/x-red" data-help-name="signTransaction">
-    <p>Use this node to sign or cosign a transaction. You can directly provide the private-key here or simply link an account node.<br/>
-    </p>
+    <p>Use this node to sign or cosign a <a href="https://nemtech.github.io/concepts/transaction.html#">transaction</a>. You can directly provide the private key here or simply link an account node.</p>
+
+        <h3>Inputs</h3>
+        <dl class="message-properties">
+            <dt>privateKey <span class="property-type">string</span></dt>
+            <dd>The account private key.</dd>
+        </dl>
+        <dl class="message-properties">
+            <dt>transaction <span class="property-type">object</span></dt>
+            <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transaction_.transaction.html">Transaction</a> object.</dd>
+        </dl>
+        <h3>Outputs</h3>
+        <dl class="message-properties">
+            <dt>signedTransaction<span class="property-type">object</span></dt>
+            <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_signedtransaction_.signedtransaction.html">SignedTransaction</a>  or <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/modules/_model_transaction_cosignaturesignedtransaction_.html">CosignatureSignedTransaction</a> object.</dd>
+        </dl>
 </script>

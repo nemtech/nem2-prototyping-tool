@@ -1,0 +1,102 @@
+<!-- 
+ * Copyright 2018 NEM
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('modifyMultisigAccount', {
+        category: 'NEM Transactions',
+        color: '#F3AA42',
+        defaults: {
+            name: { value: "" },
+            minApproval: { value: 1, validate: RED.validators.number() },
+            minRemoval: { value: 1, validate: RED.validators.number() },
+            remove: { value: false },
+            trigger: { value: "" },
+            network: { value: "", type: "networkConfig" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "Config-Multisig-White.png",
+        label: function () {
+            return this.name || "modify multisig Account transaction";
+        },
+        oneditprepare: function () {
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="modifyMultisigAccount">
+    <div class="form-row" id="node-input-networkView" >
+        <label for="node-input-server"><i></i> network</label>
+        <input type="text" id="node-input-network">
+    </div>
+                    <div class="form-row" id="node-input-minApprovalView">
+                        <label for="node-input-minApproval"><i></i>min approval</label>
+                        <input type="text" id="node-input-minApproval" placeholder="minApproval">
+                    </div>
+                    <div class="form-row" id="node-input-minRemovalView">
+                        <label for="node-input-minRemoval"><i></i>min removal</label>
+                        <input type="text" id="node-input-minRemoval" placeholder="minRemoval">
+                    </div>
+                    <div class="form-row" id="node-input-removeView">
+                        <label for="node-input-remove"><i></i>remove</label>
+                        <input type="checkbox" id="node-input-remove" placeholder=false>
+                    </div>
+                    <div class="form-row" id="node-input-triggerView">
+                        <label for="node-input-trigger"><i class="icon-play"></i>trigger</label>
+                        <input type="text" id="node-input-trigger" placeholder="trigger">
+                    </div>
+                    <div class="form-row" id="node-input-nameView">
+                        <label for="node-input-name"><i class="icon-tag"></i>name</label>
+                        <input type="text" id="node-input-name"placeholder="name (optional)">
+                    </div>
+   
+</script>
+
+<script type="text/x-red" data-help-name="configMultisig">
+
+    <p> Use this node to create a <a href="https://nemtech.github.io/concepts/multisig-account.html#modify-multisig-account-transaction">modify multisig account transaction</a>.</p>
+    A NEM account can be converted to multisig</a>. From that moment on, the account cannot announce transactions by itself, requiring other accounts to announce transactions for them. These other accounts are the multisig cosignatories.
+    <p><i>Note</i>: Mark remove option to remove cosingatories from an account.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+       <dt>minApproval <span class="property-type">number</span></dt>
+       <dd>The number of signatures needed to approve a transaction. If we are modifying an existing multisig account this indicates the relative change of the minimum cosignatories.</dd>
+    </dl>
+    <dl class="message-properties">
+       <dt>minRemoval <span class="property-type">number</span></dt>
+       <dd>The number of signatures needed to remove a cosignatory. If we are modifying an existing multisig account this indicates the relative change of the minimum cosignatories.</dd>
+    </dl>
+    <dl class="message-properties">
+       <dt>publicAccount <span class="property-type">object</span></dt>
+       <dd>The <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_account_publicaccount_.publicaccount.html">publicAccount</a> object to be added as a cosigner (or removed). Link multiple inner transaction nodes.</dd>
+    </dl>
+
+    <dl class="message-properties">
+       <dt>trigger <span class="property-type">string</span></dt>
+       <dd>Link an inject node with a payload, for example "finished". The trigger is used to create the modify multisig account object after adding all cosignatories.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+      <dl class="message-properties">
+        <dt>transactionType <span class="property-type">string</span></dt>
+        <dd>convertIntoMultisig.</dd>
+      </dl>
+      <dl class="message-properties">
+        <dt>transaction <span class="property-type">object</span></dt>
+        <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_modifymultisigaccounttransaction_.modifymultisigaccounttransaction.html">ModifyMultisigAccountTransaction</a> object.</dd>
+      </dl>
+</script>

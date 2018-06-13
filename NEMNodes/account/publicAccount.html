@@ -15,25 +15,57 @@
 -->
 
 <script type="text/javascript">
-    RED.nodes.registerType('public account', {
+    RED.nodes.registerType('publicAccount', {
         category: 'NEM Account',
         color: '#F2806A',
         defaults: {
             name: { value: "" },
-            publicKey: { value: "" },
+            publicKey: { value: "", validate: RED.validators.regex(/^([0-9A-Fa-f]{2}){32}$|^.{0}$/) },
             network: { value: "", type: "networkConfig" }
         },
-
         inputs: 1,
         outputs: 1,
-        icon: "face.png",
+        icon: "Public-Account-White.png",
         label: function () {
             return this.name || "public account";
+        },
+        button: {
+            enabled: function () {
+                return !this.changed
+            },
+            onclick: function () {
+                if (this.changed) {
+                    return RED.notify(RED._("notification.warning", { message: RED._("notification.warnings.undeployedChanges") }), "warning");
+                }
+                if (!this.publicKey.trim()) {
+                    return RED.notify(RED._("warning: public key not defined"), "warning");
+                }
+                var label = (this.name || "account");
+                var node = this;
+                $.ajax({
+                    url: "inject/" + this.id,
+                    type: "POST",
+                    success: function (resp, textStatus, xhr) {
+                        RED.notify(node._("succesfully started " + label), "success");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status == 404) {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.not-deployed") }), "error");
+                        } else if (jqXHR.status == 500) {
+                            RED.notify(node._("common.notification.error", { message: node._("inject.errors.failed") }), "error");
+                        } else if (jqXHR.status == 0) {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.no-response") }), "error");
+                        } else {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.unexpected", { status: jqXHR.status, message: textStatus }) }), "error");
+                        }
+                    }
+                });
+            }
         }
     });
 </script>
 
-<script type="text/x-red" data-template-name="public account">
+<script type="text/x-red" data-template-name="publicAccount">
         <div class="form-row" id="node-input-publicKeyView">
                 <label for="node-input-publicKey"><i></i> public key</label>
                 <input type="text" id="node-input-publicKey" placeholder="public key ">
@@ -49,7 +81,26 @@
 </script>
 
 
-<script type="text/x-red" data-help-name="public account">
-    <p>Configure a public account node by providing the public-key.<br/>
-    </p>
+<script type="text/x-red" data-help-name="publicAccount">
+    <p>Configure a public <a href="https://nemtech.github.io/concepts/account.html">account</a> node by providing the private key.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>publicKey <span class="property-type">string</span></dt>
+        <dd>The account public key.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>account<span class="property-type">object</span></dt>
+        <dd>The <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_account_account_.account.html">Account</a> object.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>address <span class="property-type">string</span></dt>
+        <dd>The account address.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>publicKey <span class="property-type">string</span></dt>
+        <dd>The account public key.</dd>
+    </dl>
 </script>

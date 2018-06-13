@@ -17,9 +17,13 @@
     RED.nodes.registerType('networkConfig', {
         category: 'config',
         defaults: {
-            network: { value: "" }
+            network: { value: "" },
+            customNetwork: { value: "" }
         },
         label: function () {
+            if (this.customNetwork.trim()) {
+                this.network = this.customNetwork;
+            }
             return this.network;
         }
     });
@@ -31,5 +35,7 @@
             <select type="text" id="node-config-input-network" style="width:70%;">
             <option value="MIJIN_TEST">MIJIN_TEST</option>
             </select>
+            <label for="node-config-input-customNetwork">custom network</label>
+            <input value="" type="text"  id="node-config-input-customNetwork"></input>
     </div>
 </script>

@@ -16,7 +16,7 @@
 
 module.exports = function (RED) {
     const { ModifyMultisigAccountTransaction, MultisigCosignatoryModification, MultisigCosignatoryModificationType, Deadline, NetworkType } = require('nem2-sdk');
-    function configMultisig(config) {
+    function modifyMultisigAccount(config) {
         RED.nodes.createNode(this, config);
         let context = this.context().flow;
         this.privateKey = config.privateKey;
@@ -35,9 +35,10 @@ module.exports = function (RED) {
                 }
                 const minApproval = node.minApproval || msg.nem.minApproval;
                 const minRemoval = node.minRemoval || msg.nem.minRemoval;
+                const network = node.network || msg.nem.network;
                 let publicAccounts = context.get(node.id) || [];
 
-                if (msg.nem.publicAccount != undefined) {
+                if (msg.nem.publicAccount) {
                     if (node.remove === "true") {
                         publicAccounts = publicAccounts.concat(new MultisigCosignatoryModification(1, msg.nem.publicAccount));
                     }
@@ -52,10 +53,10 @@ module.exports = function (RED) {
                         minApproval,
                         minRemoval,
                         publicAccounts,
-                        NetworkType[node.network]
+                        NetworkType[network]
                     );
                     msg.nem.transaction = convertIntoMultisigTransaction;
-                    msg.nem.transactionType = "convertIntoMultisig";
+                    msg.nem.transactionType = "modifyMultisigAccount";
                     context.set(node.id, []);
                     node.send(msg);
                 }
@@ -65,5 +66,5 @@ module.exports = function (RED) {
             }
         });
     }
-    RED.nodes.registerType("configMultisig", configMultisig);
+    RED.nodes.registerType("modifyMultisigAccount", modifyMultisigAccount);
 };

@@ -16,11 +16,13 @@
 
 module.exports = function (RED) {
     const { AggregateTransaction, PublicAccount, NetworkType, Deadline } = require('nem2-sdk');
+    const validation = require('../lib/validation');
     function aggregateComplete(config) {
         RED.nodes.createNode(this, config);
         let context = this.context().flow;
         this.trigger = config.trigger;
         this.network = RED.nodes.getNode(config.network).network;
+        let account = "";
         const node = this;
         context.set(node.id, []);
 
@@ -29,10 +31,14 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                const publicKey = msg.nem.publicKey;//get publicKey from account(public and full account)
+                const publicKey = msg.nem.publicKey;
+                const network = node.network || msg.nem.network;
                 let savedTransactions = context.get(node.id) || [];
-                if (msg.nem.transaction !== "undefined") {
-                    publicAccount = msg.nem.publicAccount || PublicAccount.createFromPublicKey(publicKey, NetworkType[node.network]);
+                if (!account && msg.nem.account) {
+                    account = msg.nem.account;
+                }
+                if (msg.nem.transaction && validation.publicKeyValidate(publicKey)) {
+                    publicAccount = msg.nem.publicAccount || PublicAccount.createFromPublicKey(publicKey, NetworkType[network]);
                     savedTransactions = savedTransactions.concat(msg.nem.transaction.toAggregate(publicAccount));
                     context.set(node.id, savedTransactions);
                 }
@@ -40,12 +46,14 @@ module.exports = function (RED) {
                     const aggregateTransaction = AggregateTransaction.createComplete(
                         Deadline.create(),
                         savedTransactions,
-                        NetworkType[node.network],
+                        NetworkType[network],
                         []
                     );
                     msg.nem.transactionType = "aggregateComplete";
                     msg.nem.transaction = aggregateTransaction;
+                    msg.nem.account = account;
                     context.set(node.id, []);
+                    account = "";
                     node.send(msg);
                 }
             } catch (error) {

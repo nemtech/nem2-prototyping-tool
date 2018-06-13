@@ -19,18 +19,15 @@
         category: 'config',
         defaults: {
             url: { value: "" },
-            customServer: { value: "" },
-            network: { value: "", type: "networkConfig", required: false },
+            customUrl: { value: "", validate: RED.validators.regex(/^((http|https):\/\/)[-a-zA-Z0-9@:%.\/_\+~#=]+$|^.{0}$/) },
+            network: { value: "", type: "networkConfig", required: true },
             port: { value: "3000", required: true, validate: RED.validators.number() }
         },
         label: function () {
-            if (!this.customServer == "") {
-                this.url = this.customServer;
-
+            if (this.customUrl.trim()) {
+                this.url = this.customUrl;
             }
-            var returnMsg = "server:" + this.url + ":" + this.port;
-
-            return returnMsg;
+            return "server:" + this.url + ":" + this.port;
         }
     });
 </script>
@@ -41,8 +38,8 @@
         <label for="node-config-input-url">url</label>
         <select type="text" id="node-config-input-url" style="width:70%;">
         </select>
-        <label for="node-config-input-customServer">custom server</label>
-        <input value="test" type="text"  id="node-config-input-customServer"></input>
+        <label for="node-config-input-customUrl">custom url</label>
+        <input value="text" type="text" id="node-config-input-customUrl" placeholder="http(s)://your url or ip address">
     </div>
     
     <div class="form-row">

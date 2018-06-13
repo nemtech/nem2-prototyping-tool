@@ -20,13 +20,13 @@
         color: '#F3AA42',
         defaults: {
             name: { value: "" },
-            namespace: { value: undefined },
-            leaseTime: { value: 0 },
+            namespace: { value: "", validate: RED.validators.regex(/^([0-9a-z_\-]){0,64}$/) },
+            duration: { value: 0, validate: RED.validators.number() },
             network: { value: "", type: "networkConfig" }
         },
         inputs: 1,
         outputs: 1,
-        icon: "face.png",
+        icon: "CreateNamespace-White.png",
         label: function () {
 
             return this.name || "create namespace transaction";
@@ -43,11 +43,11 @@
     </div>
                 <div class="form-row" id="node-input-namespaceView">
                         <label for="node-input-namespace"><i></i>root namespace</label>
-                        <input type="text" id="node-input-namespace" placeholder="namepspace">
+                        <input type="text" id="node-input-namespace" placeholder="namespace">
                     </div>
-                <div class="form-row" id="node-input-leaseTimeView">
-                        <label for="node-input-leaseTime"><i></i> lease time</label>
-                        <input type="number" id="node-input-leaseTime">
+                <div class="form-row" id="node-input-durationView">
+                        <label for="node-input-duration"><i></i> duration (expressed in blocks)</label>
+                        <input type="number" id="node-input-duration">
                     </div>
                     <div class="form-row" id="node-input-nameView">
                         <label for="node-input-name"><i class="icon-tag"></i>name</label>
@@ -58,9 +58,23 @@
 
 
 <script type="text/x-red" data-help-name="createNamespace">
-    <p>A namespace is an on-chain unique domain for your mosaics. You can specify the length of domain rental, by entering the amount of confirmed blocks you wish to lease the namespace for.<br/>
-        A namespace name must be unique and may have a maximum length of 64 characters.<br/><br/>
-Allowed characters are a, b, c, …, z, 0, 1, 2, …, 9, ‘, _ , -. <br/><br/>
-        If one account creates a namespace, that namespace will appear unique in the NEM ecosystem. For example, you create a namespace called <i>foo</i>, a second person cannot create the same namespace.<br/>
+    <p>Use this node to define a <a href="https://nemtech.github.io/concepts/namespace.html#register-namespace-transaction">register namespace transaction</a>.</p>
+    <p>A namespace is an on-chain unique domain for your mosaics. A namespace name must be unique and may have a maximum length of 64 characters. You can specify the duration rental in blocks.
     </p>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>namespace <span class="property-type">string</span></dt>
+        <dd>The namespace name.</dd>
+    </dl>
+
+   <h3>Outputs</h3>
+   <dl class="message-properties">
+        <dt>transactionType <span class="property-type">string</span></dt>
+        <dd>createNamespace.</dd>
+   </dl>
+   <dl class="message-properties">
+        <dt>transaction <span class="property-type">object</span></dt>
+        <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/modules/_model_transaction_registernamespacetransaction_.html">RegisterNamespaceTransaction</a> object.</dd>
+   </dl>
+
 </script>

@@ -19,6 +19,9 @@ module.exports = function (RED) {
     function networkConfig(n) {
         RED.nodes.createNode(this, n);
         this.network = n.network;
+        if (!n.customNetwork == "") {
+            this.network = n.customNetwork;
+        }
     }
     RED.nodes.registerType("networkConfig", networkConfig);
 };

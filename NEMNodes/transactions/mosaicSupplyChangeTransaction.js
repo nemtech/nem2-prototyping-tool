@@ -15,10 +15,10 @@
  */
 
 module.exports = function (RED) {
-    const { MosaicSupplyChangeTransaction, Deadline, UInt64, NetworkType } = require('nem2-sdk');
+    const { MosaicSupplyChangeTransaction, MosaicId, Deadline, UInt64, NetworkType } = require('nem2-sdk');
+    const validation = require('../lib/validation');
     function mosaicSupplyChange(config) {
         RED.nodes.createNode(this, config);
-        let context = this.context().flow;
         this.mosaic = config.mosaic;
         this.amount = config.amount;
         this.direction = config.direction;
@@ -29,20 +29,23 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                //get all the variables 
-                const mosaic = node.mosaic || msg.nem.mosaic || undefined;
-                const mosaicSupplyChangeTransaction = MosaicSupplyChangeTransaction.create(
-                    Deadline.create(),
-                    mosaic,
-                    node.direction,
-                    UInt64.fromUint(node.mosaicAmount),
-                    NetworkType[node.network]);
+                const mosaic = node.mosaic || msg.nem.mosaic;
+                const network = node.network || msg.nem.network;
+                if (validation.mosaicFullNameValidate(mosaic)) {
+                    const mosaicSupplyChangeTransaction = MosaicSupplyChangeTransaction.create(
+                        Deadline.create(),
+                        new MosaicId(mosaic),
+                        node.direction,
+                        UInt64.fromUint(node.amount),
+                        NetworkType[network]);
 
-                msg.nem.transactionType = "mosaicSupplyChange";
-                msg.nem.transaction = mosaicSupplyChangeTransaction;
-                node.send(msg);
-
-
+                    msg.nem.transactionType = "mosaicSupplyChange";
+                    msg.nem.transaction = mosaicSupplyChangeTransaction;
+                    node.send(msg);
+                }
+                else {
+                    node.error("mosaic: \"" + mosaic + "\" is not correct", msg)
+                }
             } catch (error) {
                 node.error(error);
             }

@@ -15,26 +15,58 @@
 -->
 
 <script type="text/javascript">
-    RED.nodes.registerType('account info', {
+    RED.nodes.registerType('accountInfo', {
         category: 'NEM Account',
         color: '#C5523C',
         defaults: {
             name: { value: "" },
-            address: { value: "" },
+            address: { value: "",validate: RED.validators.regex(/^([0-9a-zA-Z]){40}$|^((([0-9a-zA-Z\-]){7}){6}([0-9a-zA-Z]){4}){0,1}$/) },
             server: { value: "", type: "serverConfig" },
             accountType: { value: "getAccountInfo" }
-
         },
         inputs: 1,
         outputs: 1,
-        icon: "face.png",
+        icon: "Account-Info-White.png",
         label: function () {
             return this.name || "account info";
+        },
+        button: {
+            enabled: function () {
+                return !this.changed
+            },
+            onclick: function () {
+                if (this.changed) {
+                    return RED.notify(RED._("notification.warning", { message: RED._("notification.warnings.undeployedChanges") }), "warning");
+                }
+                if (!this.address.trim()) {
+                    return RED.notify(RED._("warning: address not defined"), "warning");
+                }
+                var label = (this.name || "accountInfo");
+                var node = this;
+                $.ajax({
+                    url: "inject/" + this.id,
+                    type: "POST",
+                    success: function (resp, textStatus, xhr) {
+                        RED.notify(node._("succesfully started " + label), "success");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status == 404) {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.not-deployed") }), "error");
+                        } else if (jqXHR.status == 500) {
+                            RED.notify(node._("common.notification.error", { message: node._("inject.errors.failed") }), "error");
+                        } else if (jqXHR.status == 0) {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.no-response") }), "error");
+                        } else {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.unexpected", { status: jqXHR.status, message: textStatus }) }), "error");
+                        }
+                    }
+                });
+            }
         }
     });
 </script>
 
-<script type="text/x-red" data-template-name="account info">
+<script type="text/x-red" data-template-name="accountInfo">
     
     <div class="form-row">
         <label for="node-input-server"><i class="icon-globe"></i> Server</label>
@@ -57,19 +89,23 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="account info">
-    <p>
-        Get the account info by providing the address.<br>
-        Account info consists of:
-        <ul>
-                <li>Address of the account</li>
-                <li>Height when the address was published</li>
-                <li>Importance of the account</li>
-                <li>Account metadata</li>
-                <li>Mosaics held by the account</li>
-                <li>Public key of the account</li>
-                <li>Height when the public key was published</li>
-        </ul>
-        <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_account_accountinfo_.accountinfo.html">Documentation</a><br/>
-    </p>
+<script type="text/x-red" data-help-name="accountInfo">
+
+
+    <p>Get the <a href="https://nemtech.github.io/concepts/account.html">account</a> information. You can directly provide the address here or simply link an account node.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>address <span class="property-type">string</span></dt>
+        <dd>The account address.</dd>
+    </dl>
+
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>accountInfo<span class="property-type">object</span></dt>
+        <dd>The <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_account_accountinfo_.accountinfo.html">AccountInfo</a> object.
+        </dd>
+    </dl>
+
 </script>

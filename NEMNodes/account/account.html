@@ -20,15 +20,48 @@
         color: '#F06449',
         defaults: {
             name: { value: "" },
-            privateKey: { value: "" },
+            privateKey: { value: "", validate: RED.validators.regex(/^([0-9A-Fa-f]{2}){32}$|^.{0}$/) },
             network: { value: "", type: "networkConfig" }
         },
 
         inputs: 1,
         outputs: 1,
-        icon: "face.png",
+        icon: "Accoun-Whitet.png",
         label: function () {
             return this.name || "account";
+        },
+        button: {
+            enabled: function () {
+                return !this.changed
+            },
+            onclick: function () {
+                if (this.changed) {
+                    return RED.notify(RED._("notification.warning", { message: RED._("notification.warnings.undeployedChanges") }), "warning");
+                }
+                if (!this.privateKey.trim()) {
+                    return RED.notify(RED._("warning: privateKey not defined"), "warning");
+                }
+                var label = (this.name || "account");
+                var node = this;
+                $.ajax({
+                    url: "inject/" + this.id,
+                    type: "POST",
+                    success: function (resp, textStatus, xhr) {
+                        RED.notify(node._("succesfully injected " + label), "success");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status == 404) {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.not-deployed") }), "error");
+                        } else if (jqXHR.status == 500) {
+                            RED.notify(node._("common.notification.error", { message: node._("inject.errors.failed") }), "error");
+                        } else if (jqXHR.status == 0) {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.no-response") }), "error");
+                        } else {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.unexpected", { status: jqXHR.status, message: textStatus }) }), "error");
+                        }
+                    }
+                });
+            }
         }
     });
 </script>
@@ -50,6 +83,26 @@
 
 
 <script type="text/x-red" data-help-name="account">
-    <p>Configure your account node by providing the private-key.<br/>
-    </p>
+    <p>Configure your <a href="https://nemtech.github.io/concepts/account.html">account</a> node by providing the private key.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>privateKey <span class="property-type">string</span></dt>
+        <dd>The account private key.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>account<span class="property-type">object</span></dt>
+        <dd>The <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_account_account_.account.html">account</a> object.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>address <span class="property-type">string</span></dt>
+        <dd>The account address.</dd>
+    </dl>
+    <dl class="message-properties">
+            <dt>publicKey <span class="property-type">string</span></dt>
+            <dd>The account public key.</dd>
+    </dl>
+
 </script> /// make credentials to work

@@ -26,13 +26,14 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
+                const network = node.network || msg.nem.network;
                 if (msg.nem.signedTransaction !== "undefined") {
                     const lockFundTransaction = LockFundsTransaction.create(
                         Deadline.create(),
                         XEM.createRelative(10),
                         UInt64.fromUint(480),
                         msg.nem.signedTransaction, //need a aggregateBonded transaction or multisig transaction in message
-                        NetworkType[node.network]);
+                        NetworkType[network]);
                     msg.nem.transaction = lockFundTransaction;
                     msg.nem.transactionType = "lockFund";
                     node.send(msg);

@@ -23,9 +23,8 @@
         },
         inputs: 1,
         outputs: 1,
-        icon: "face.png",
+        icon: "Consignature-White.png",
         label: function () {
-
             return this.name || "co signature transaction";
         },
         oneditprepare: function () {
@@ -42,6 +41,23 @@
 
 
 <script type="text/x-red" data-help-name="cosignature">
-    <p>Cosignature transaction is used to sign an aggregate transaction with missing cosignatures.<br/>
-    </p>
+    <p>Prepare a <a href="https://nemtech.github.io/concepts/aggregate-transaction.html#cosignature-transaction">cosignature transaction</a> node to sign an <a href="https://nemtech.github.io/concepts/aggregate-transaction.html#aggregate-bonded">aggregate bonded transaction</a> with missing cosignatures.<br/>
+
+    <h3>Inputs</h3>
+     <dl class="message-properties">
+        <dt>transaction <span class="property-type">object</span></dt>
+        <dd>The <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/modules/_model_transaction_aggregatetransaction_.html">AggregateTransaction</a> object to cosign.</dd>
+     </dl>
+      <h3>Outputs</h3>
+      <dl class="message-properties">
+        <dt>transactionType <span class="property-type">string</span></dt>
+        <dd>Cosignature.</dd>
+      </dl>
+      <dl class="message-properties">
+        <dt>transaction <span class="property-type">object</span></dt>
+        <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_cosignaturetransaction_.cosignaturetransaction.html">CosignatureTransaction</a> object.</dd>
+      </dl>
+
 </script>
+
+

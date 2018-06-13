@@ -31,13 +31,14 @@ module.exports = function (RED) {
                 }
                 const secret = node.secret || msg.nem.secret;
                 const proof = node.proof || msg.nem.proof;
+                const network = node.network || msg.nem.network;
 
                 const secretProofTransaction = SecretProofTransaction.create(
                     Deadline.create(),
                     HashType[node.hashType],
                     secret,
                     proof,
-                    NetworkType[node.network]
+                    NetworkType[network]
                 );
                 msg.nem.transaction = secretProofTransaction;
                 msg.nem.transactionType = "secretProof";

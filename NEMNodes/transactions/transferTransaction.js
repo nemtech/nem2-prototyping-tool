@@ -16,11 +16,11 @@
 
 module.exports = function (RED) {
     const { TransferTransaction, Deadline, Address, Mosaic, MosaicId, UInt64, PlainMessage, NetworkType } = require('nem2-sdk');
+    const validation = require('../lib/validation');
     function transfer(config) {
         RED.nodes.createNode(this, config);
-        this.address = config.address;
+        this.recipient = config.recipient;
         this.message = config.message;
-        this.namespace = config.namespace;
         this.mosaic = config.mosaic;
         this.amount = config.amount;
         this.publicKey = config.publicKey;
@@ -32,25 +32,30 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                const address = node.address || msg.nem.address;
+                const address = node.recipient || msg.nem.address;
                 const message = node.message || msg.nem.message || "";
                 const publicKey = node.publicKey || msg.nem.publicKey;
-                const namespace = node.namespace || msg.nem.namespace || "nem";
-                const mosaic = node.mosaic || msg.nem.mosaic || "xem";
-                if (address != undefined) {
+                const mosaic = node.mosaic || msg.nem.mosaic;
+                const network = node.network || msg.nem.network;
+                if (validation.addressValidate(address) && validation.mosaicFullNameValidate(mosaic)) {
                     const transferTransaction = TransferTransaction.create(
                         Deadline.create(),
                         Address.createFromRawAddress(address),
-                        [new Mosaic(new MosaicId(namespace + ":" + mosaic), UInt64.fromUint(node.amount))],
+                        [new Mosaic(new MosaicId(mosaic), UInt64.fromUint(node.amount))],
                         PlainMessage.create(message),
-                        NetworkType[node.network]);
+                        NetworkType[network]);
 
                     msg.nem.transactionType = "transfer";
                     msg.nem.transaction = transferTransaction;
                     msg.nem.publicKey = publicKey;
+                    node.send(msg);
                 }
-                node.send(msg);
-
+                else if(!validation.addressValidate(address)){
+                    node.error("address: \"" + address + "\" is not correct", msg)
+                }
+                else {
+                    node.error("mosaic: \"" + mosaic + "\"  is not correct", msg)
+                }
             } catch (error) {
                 node.error(error);
             }
