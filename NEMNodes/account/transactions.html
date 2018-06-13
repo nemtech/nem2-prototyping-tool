@@ -84,22 +84,43 @@
 <script type="text/x-red" data-help-name="transactions">
     <p>Get and filter transactions for the provided address. You can directly provide the public key here or simply link an account node. There is also the option for you to limit the number of results. </p>
 
-        <h3>Inputs</h3>
-        <dl class="message-properties">
-            <dt>publicKey <span class="property-type">string</span></dt>
-            <dd>The account public key.</dd>
-        </dl>
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>server <span class="property-type">object</span></dt>
+        <dd>The server configuration.</dd>
+    </dl>
+     <dl class="message-properties">
+        <dt>transactions type <span class="property-type">string</span></dt>
+        <dd>transactions, incoming transactions, outgoing transactions, unconfirmed transactions or aggregate bonded transactions.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>public key <span class="property-type">string</span></dt>
+        <dd>The account public key.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>all transactions <span class="property-type">boolean</span></dt>
+        <dd>Set it to false if you want to choose the number of transactions to get manually.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>last x transactions <span class="property-type">string</span></dt>
+        <dd>Number of transactions to retrieve. Minimum 10.</dd>
+    </dl>
 
-        <h3>Outputs</h3>
-        <dl class="message-properties">
-            <dt>transactions<span class="property-type">object</span></dt>
-            <dd>Array of <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/modules/_model_transaction_transaction_.html">Transactions</a>.
-            </dd>
-        </dl>
-       <dl class="message-properties">
-            <dt>transactionsType<span class="property-type">string</span></dt>
-            <dd>transactions, incoming transactions, outgoing transactions, unconfirmed transactions or aggregate bonded transactions</a>.
-            </dd>
-        </dl>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>publicKey <span class="property-type">string</span></dt>
+        <dd>The account public key.</dd>
+    </dl>
 
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>transactions<span class="property-type">object</span></dt>
+        <dd>Array of <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/modules/_model_transaction_transaction_.html">Transactions</a>.
+        </dd>
+    </dl>
+   <dl class="message-properties">
+        <dt>transactionsType<span class="property-type">string</span></dt>
+        <dd>transactions, incoming transactions, outgoing transactions, unconfirmed transactions or aggregate bonded transactions</a>.
+        </dd>
+    </dl>
 </script>

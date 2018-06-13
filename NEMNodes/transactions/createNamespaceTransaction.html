@@ -61,12 +61,24 @@
     <p>Use this node to define a <a href="https://nemtech.github.io/concepts/namespace.html#register-namespace-transaction">register namespace transaction</a>.</p>
     <p>A namespace is an on-chain unique domain for your mosaics. A namespace name must be unique and may have a maximum length of 64 characters. You can specify the duration rental in blocks.
     </p>
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>network <span class="property-type">object</span></dt>
+        <dd>The network configuration.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>root namespace <span class="property-type">string</span></dt>
+        <dd>The namespace name.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>duration <span class="property-type">number</span></dt>
+        <dd>The duration rental expressed in blocks.</dd>
+    </dl>
     <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>namespace <span class="property-type">string</span></dt>
         <dd>The namespace name.</dd>
     </dl>
-
    <h3>Outputs</h3>
    <dl class="message-properties">
         <dt>transactionType <span class="property-type">string</span></dt>

@@ -56,18 +56,31 @@
 <script type="text/x-red" data-help-name="signTransaction">
     <p>Use this node to sign or cosign a <a href="https://nemtech.github.io/concepts/transaction.html#">transaction</a>. You can directly provide the private key here or simply link an account node.</p>
 
-        <h3>Inputs</h3>
-        <dl class="message-properties">
-            <dt>privateKey <span class="property-type">string</span></dt>
-            <dd>The account private key.</dd>
-        </dl>
-        <dl class="message-properties">
-            <dt>transaction <span class="property-type">object</span></dt>
-            <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transaction_.transaction.html">Transaction</a> object.</dd>
-        </dl>
-        <h3>Outputs</h3>
-        <dl class="message-properties">
-            <dt>signedTransaction<span class="property-type">object</span></dt>
-            <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_signedtransaction_.signedtransaction.html">SignedTransaction</a>  or <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/modules/_model_transaction_cosignaturesignedtransaction_.html">CosignatureSignedTransaction</a> object.</dd>
-        </dl>
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>network <span class="property-type">object</span></dt>
+        <dd>The network configuration.</dd>
+    </dl>
+     <dl class="message-properties">
+        <dt>private key <span class="property-type">string</span></dt>
+        <dd>The account private key.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>cosign <span class="property-type">boolean</span></dt>
+        <dd>If you are cosigning an aggregate bonded transaction.</dd>
+    </dl>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>privateKey <span class="property-type">string</span></dt>
+        <dd>The account private key.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>transaction <span class="property-type">object</span></dt>
+        <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transaction_.transaction.html">Transaction</a> object.</dd>
+    </dl>
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>signedTransaction<span class="property-type">object</span></dt>
+        <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_signedtransaction_.signedtransaction.html">SignedTransaction</a>  or <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/modules/_model_transaction_cosignaturesignedtransaction_.html">CosignatureSignedTransaction</a> object.</dd>
+    </dl>
 </script>

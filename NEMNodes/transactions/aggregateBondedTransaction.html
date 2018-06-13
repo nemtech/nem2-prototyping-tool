@@ -57,6 +57,15 @@
     <i>Note</i>: When announcing an aggregate bonded transaction, an account should first send and get confirmed a <a href="https://nemtech.github.io/concepts/aggregate-transaction.html#lock-funds-transaction">Lock Funds Transaction</a> for this aggregate with at least 10 XEM.
     </p>
 
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>network <span class="property-type">object</span></dt>
+        <dd>The network configuration.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>trigger <span class="property-type">string</span></dt>
+        <dd>Trigger name, for example "finished".</dd>
+    </dl>
     <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>transaction <span class="property-type">object</span></dt>
@@ -64,9 +73,8 @@
     </dl>
     <dl class="message-properties">
         <dt>trigger <span class="property-type">string</span></dt>
-        <dd>Link an inject node with a payload, for example "finished". The trigger is used to create the aggregate transaction object after adding all inner transactions.</dd>
+        <dd>The trigger is used to create the aggregate transaction object after adding all inner transactions. Drag and drop an inject node and a change node, linking them together. Open the change node and set msg. to "nem.trigger" and to with "finished" string. Link change node with this node.</dd>
     </dl>
-
     <h3>Outputs</h3>
    <dl class="message-properties">
         <dt>transactionType <span class="property-type">string</span></dt>
