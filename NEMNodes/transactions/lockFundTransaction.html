@@ -51,24 +51,31 @@
 
 
 <script type="text/x-red" data-help-name="lockFund">
- <p> Use this node to prepare a <a href="https://nemtech.github.io/concepts/transfer-transaction.html">LockFundsTransaction</a>.</p>
- <p>Announce a lock funds transaction before announcing an aggregate bonded transaction. Once the related aggregate bonded transaction is confirmed, locked funds become available again in the account that signed the initial lock funds transaction.</p>
+    <p> Use this node to prepare a <a href="https://nemtech.github.io/concepts/transfer-transaction.html">LockFundsTransaction</a>.</p>
+    <p>Announce a lock funds transaction before announcing an aggregate bonded transaction. Once the related aggregate bonded transaction is confirmed, locked funds become available again in the account that signed the initial lock funds transaction.</p>
 
-
- <h3>Inputs</h3>
- <dl class="message-properties">
-    <dt>signedTransaction <span class="property-type">object</span></dt>
-    <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_signedtransaction_.signedtransaction.html">SignedTransaction</a>object.</dd>
- </dl>
-
-  <h3>Outputs</h3>
-  <dl class="message-properties">
-    <dt>transactionType <span class="property-type">string</span></dt>
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>network <span class="property-type">object</span></dt>
+        <dd>The network configuration.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>lock amount <span class="property-type">number</span></dt>
+        <dd>XEM amount to lock.</dd>
+    </dl>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>signedTransaction <span class="property-type">object</span></dt>
+        <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_signedtransaction_.signedtransaction.html">SignedTransaction</a>object.</dd>
+    </dl>
+    <h3>Outputs</h3>
+        <dl class="message-properties">
+        <dt>transactionType <span class="property-type">string</span></dt>
     <dd>lockFund.</dd>
-  </dl>
-  <dl class="message-properties">
-    <dt>transaction <span class="property-type">object</span></dt>
-    <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_lockfundstransaction_.lockfundstransaction.html">LockFundsTransaction</a> object.</dd>
-  </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>transaction <span class="property-type">object</span></dt>
+        <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_lockfundstransaction_.lockfundstransaction.html">LockFundsTransaction</a> object.</dd>
+    </dl>
 
 </script>

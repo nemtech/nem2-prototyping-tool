@@ -80,16 +80,37 @@
 <script type="text/x-red" data-help-name="createMosaicDefinition">
     <p>Use this node to define a <a href="https://nemtech.github.io/concepts/mosaic.html#mosaic-definition-transaction">mosaic definition transaction</a>.</p>
        Mosaics are fixed assets on the NEM blockchain that can represent a set of multiple identical things that do not change. A mosaic is always linked to a namespace, like a file hosted on a domain.
-
-       The behavior of a mosaic can be customized by a set of properties. Supported properties are:
-
-       <ul>
-           <li>Transferable: choose whether the mosaic can be transferred to and from arbitrary accounts, or only allowing the mosaic to go back to the creator, once transferred.</li>
-           <li>Supply mutable: when selected, the mosaic supply can be changed at a later point in time.</li>
-           <li>Divisibility: determines up to what decimal place the mosaic can be divided. Divisibility of 3 means that a mosaic can be divided into smallest parts of 0.001 mosaics. The divisibility must be in the range of 0 and 6.</li>
-           <li>Duration: The number of confirmed blocks you would like to rent the space for the mosaic.</li>
-       </ul>
     </p>
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>network <span class="property-type">object</span></dt>
+        <dd>The network configuration.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>namespace <span class="property-type">string</span></dt>
+        <dd>The namespace name.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>mosaic <span class="property-type">string</span></dt>
+        <dd>The mosaic name.</dd>
+    </dl>
+     <dl class="message-properties">
+        <dt>transferable <span class="property-type">boolean</span></dt>
+        <dd>Choose whether the mosaic can be transferred to and from arbitrary accounts, or only allowing the mosaic to go back to the creator, once transferred.</dd>
+    </dl>
+     <dl class="message-properties">
+        <dt>supply mutable <span class="property-type">boolean</span></dt>
+        <dd>When selected, the mosaic supply can be changed at a later point in time.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>divisibility <span class="property-type">number</span></dt>
+        <dd>Determines up to what decimal place the mosaic can be divided. Divisibility of 3 means that a mosaic can be divided into smallest parts of 0.001 mosaics. The divisibility must be in the range of 0 and 6.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>duration <span class="property-type">number</span></dt>
+        <dd>The number of confirmed blocks you would like to rent the space for the mosaic.</dd>
+    </dl>
+
     <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>namespace <span class="property-type">string</span></dt>

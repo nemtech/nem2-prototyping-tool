@@ -64,6 +64,23 @@
 
     <p>Namespaces can have sub-namespaces. First, provide a reference to the parent namespace and then the name of the subnamespace.</p>
 
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>network <span class="property-type">object</span></dt>
+        <dd>The network configuration.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>root namespace <span class="property-type">string</span></dt>
+        <dd>The namespace name.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>subnamespace <span class="property-type">string</span></dt>
+        <dd>The subnamespace name.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>duration <span class="property-type">number</span></dt>
+        <dd>The duration rental expressed in blocks.</dd>
+    </dl>
     <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>namespace <span class="property-type">string</span></dt>
@@ -74,15 +91,14 @@
         <dt>subnamespace <span class="property-type">string</span></dt>
         <dd>The subnamespace name.</dd>
     </dl>
-
     <h3>Outputs</h3>
-   <dl class="message-properties">
+    <dl class="message-properties">
         <dt>transactionType <span class="property-type">string</span></dt>
         <dd>createSubNamespace.</dd>
-   </dl>
-   <dl class="message-properties">
+    </dl>
+    <dl class="message-properties">
         <dt>transaction <span class="property-type">object</span></dt>
         <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/modules/_model_transaction_registernamespacetransaction_.html">RegisterNamespaceTransaction</a> object.</dd>
-   </dl>
+    </dl>
 
 </script>
