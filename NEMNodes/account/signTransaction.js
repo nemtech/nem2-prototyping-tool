@@ -31,7 +31,7 @@ module.exports = function (RED) {
                 }
                 const privateKey = node.privateKey || msg.nem.privateKey;
                 const network = node.network || msg.nem.network;
-                if (validation.privateKeyValidate(privateKey)) {
+                if (validation.privateKeyValidate(privateKey) || msg.nem.account) {
                     const account = msg.nem.account || Account.createFromPrivateKey(privateKey, NetworkType[network]);
                     if (!node.coSign && msg.nem.hasOwnProperty("transaction")) {
                         const signedTransaction = account.sign(msg.nem.transaction);
