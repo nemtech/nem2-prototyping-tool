@@ -16,7 +16,7 @@
 
 module.exports = function (RED) {
     const { MosaicDefinitionTransaction, Deadline, MosaicProperties, UInt64, NetworkType } = require('nem2-sdk');
-    const validation = require('../lib/validation');
+    const validation = require('../lib/validationService');
     function createMosaicDefinition(config) {
         RED.nodes.createNode(this, config);
         this.namespace = config.namespace;

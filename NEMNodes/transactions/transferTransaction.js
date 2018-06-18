@@ -16,7 +16,7 @@
 
 module.exports = function (RED) {
     const { TransferTransaction, Deadline, Address, Mosaic, MosaicId, UInt64, PlainMessage, NetworkType } = require('nem2-sdk');
-    const validation = require('../lib/validation');
+    const validation = require('../lib/validationService');
     function transfer(config) {
         RED.nodes.createNode(this, config);
         this.recipient = config.recipient;

@@ -16,7 +16,7 @@
 
 module.exports = function (RED) {
     const { PublicAccount, NetworkType } = require('nem2-sdk');
-    const validation = require("../lib/validation.js")
+    const validation = require("../lib/validationService")
     function publicAccount(config) {
         RED.nodes.createNode(this, config);
         this.publicKey = config.publicKey;

@@ -17,7 +17,7 @@ var should = require("should");
 var helper = require("node-red-node-test-helper/index.js");
 var generateAccountNode = require("../../NEMNodes/account/generateAccount.js");
 var networkConfigNode = require("../../NEMNodes/config/networkConfig.js");
-var validation = require("../../NEMNodes/lib/validation.js")
+var validation = require("../../NEMNodes/lib/validationService.js")
 
 helper.init(require.resolve('node-red'));
 

@@ -16,7 +16,7 @@
 
 module.exports = function (RED) {
     const { RegisterNamespaceTransaction, Deadline, UInt64, NetworkType } = require('nem2-sdk');
-    const validation = require('../lib/validation');
+    const validation = require('../lib/validationService');
     function createNamespace(config) {
         RED.nodes.createNode(this, config);
         this.namespace = config.namespace;

@@ -16,7 +16,7 @@
 
 module.exports = function (RED) {
     const { Account, CosignatureTransaction, TransactionType, NetworkType } = require('nem2-sdk');
-    const validation = require('../lib/validation');
+    const validation = require('../lib/validationService');
     function signTransaction(config) {
         RED.nodes.createNode(this, config);
         this.network = RED.nodes.getNode(config.network).network;

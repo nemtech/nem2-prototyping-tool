@@ -16,7 +16,7 @@
 
 module.exports = function (RED) {
     const { AggregateTransaction, PublicAccount, NetworkType, Deadline } = require('nem2-sdk');
-    const validation = require('../lib/validation');
+    const validation = require('../lib/validationService');
     function aggregateComplete(config) {
         RED.nodes.createNode(this, config);
         let context = this.context().flow;
