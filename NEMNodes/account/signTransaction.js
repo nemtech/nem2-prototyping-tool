@@ -31,14 +31,14 @@ module.exports = function (RED) {
                 }
                 const privateKey = node.privateKey || msg.nem.privateKey;
                 const network = node.network || msg.nem.network;
-                if (validation.privateKeyValidate(privateKey) || msg.nem.account) {
-                    const account = msg.nem.account || Account.createFromPrivateKey(privateKey, NetworkType[network]);
+                const account = validation.privateKeyValidate(privateKey) ? Account.createFromPrivateKey(privateKey, NetworkType[network]) : msg.nem.account;
+                if (account) {
                     if (!node.coSign && msg.nem.hasOwnProperty("transaction")) {
                         const signedTransaction = account.sign(msg.nem.transaction);
                         msg.nem.signedTransaction = signedTransaction;
                         node.send(msg);
                     }
-                    else if (node.coSing && msg.nem.transaction.type === TransactionType.AGGREGATE_BONDED) {
+                    else if (account && node.coSing && msg.nem.transaction.type === TransactionType.AGGREGATE_BONDED) {
                         const cosignatureTransaction = CosignatureTransaction.create(msg.nem.transaction);
                         const signedTransaction = account.signCosignatureTransaction(cosignatureTransaction);
                         msg.nem.signedTransaction = signedTransaction;

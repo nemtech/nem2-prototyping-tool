@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-nem2",
-    "version": "0.9.6",
+    "version": "0.9.7",
     "description": "NEM blockchain nodes",
     "homepage": "https://nem.io",
     "license": "Apache-2.0",
@@ -38,7 +38,7 @@
             "createSubNamespace": "NEMNodes/transactions/createSubNamespaceTransaction.js",
             "createMosaicDefinition": "NEMNodes/transactions/createMosaicDefinitionTransaction.js",
             "mosaicSupplyChange": "NEMNodes/transactions/mosaicSupplyChangeTransaction.js",
-            "modifyMultisigAccountTransaction":"NEMNodes/transactions/modifyMultisigAccountTransaction.js",
+            "modifyMultisigAccountTransaction": "NEMNodes/transactions/modifyMultisigAccountTransaction.js",
             "lockFund": "NEMNodes/transactions/lockFundTransaction.js",
             "secretLock": "NEMNodes/transactions/secretLockTransaction.js",
             "secretProof": "NEMNodes/transactions/secretProofTransaction.js",
@@ -47,13 +47,14 @@
             "newBlock": "NEMNodes/listeners/newBlock.js",
             "listener": "NEMNodes/listeners/listener.js",
             "mosaicInfo": "NEMNodes/utility/mosaicInfo.js",
-            "input":"NEMNodes/utility/input.js"
+            "input": "NEMNodes/utility/input.js"
         }
     },
     "dependencies": {
         "foo": "0.0.7",
         "nem2-sdk": "0.9.2",
-        "rxjs": "^5.5.8"
+        "rxjs": "^5.5.8",
+        "lodash": "4.17.4"
     },
     "devDependencies": {
         "node-red": "^0.18.6",
