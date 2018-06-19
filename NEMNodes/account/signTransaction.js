@@ -38,7 +38,7 @@ module.exports = function (RED) {
                         msg.nem.signedTransaction = signedTransaction;
                         node.send(msg);
                     }
-                    else if (account && node.coSing && msg.nem.transaction.type === TransactionType.AGGREGATE_BONDED) {
+                    else if (account && node.coSign && msg.nem.transaction.type === TransactionType.AGGREGATE_BONDED) {
                         const cosignatureTransaction = CosignatureTransaction.create(msg.nem.transaction);
                         const signedTransaction = account.signCosignatureTransaction(cosignatureTransaction);
                         msg.nem.signedTransaction = signedTransaction;
