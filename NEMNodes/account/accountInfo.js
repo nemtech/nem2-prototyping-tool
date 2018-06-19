@@ -18,7 +18,7 @@ module.exports = function (RED) {
 
     function accountInfo(config) {
         const { AccountHttp, Address } = require('nem2-sdk');
-        const validation = require('../lib/validation');
+        const validation = require('../lib/validationService');
         RED.nodes.createNode(this, config);
         this.host = RED.nodes.getNode(config.server).host;
         this.address = config.address;
