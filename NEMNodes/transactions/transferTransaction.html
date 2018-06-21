@@ -25,8 +25,7 @@
             amount: { value: 0, validate: RED.validators.number() },
             mosaic: { value: "", validate: RED.validators.regex(/^([0-9a-z_\-]{1,64})((\.([0-9a-z_\-]{1,64})){0,2})(:[0-9a-z_\-]{1,64}){1}$|^.{0}$/) },
             publicKey: { value: "", validate: RED.validators.regex(/^([0-9A-Fa-f]{2}){32}$|^.{0}$/) },
-            network: { value: "", type: "networkConfig" },
-            toAggregate: { value: false }
+            network: { value: "", type: "networkConfig" }
         },
         inputs: 1,
         outputs: 1,
@@ -56,10 +55,6 @@
             <div class="form-row" id="node-input-recipientView">
                     <label for="node-input-recipient"><i class="fa fa-address-card"></i> recipient</label>
                     <input type="text" id="node-input-recipient" placeholder="Address">
-                </div>
-                <div class="form-row" id="node-input-toAggregateView">
-                    <label for="node-input-toAggregate"><i></i>to aggregate</label>
-                    <input type="checkbox" id="node-input-toAggregate">
                 </div>
                 <div class="form-row" id="node-input-publicKeyView">
                         <label for="node-input-publicKey"><i></i>public key send from</label>
