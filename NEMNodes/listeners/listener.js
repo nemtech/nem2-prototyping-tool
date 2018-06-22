@@ -16,7 +16,7 @@
 
 module.exports = function (RED) {
     const { Listener, Address } = require('nem2-sdk');
-    const validation = require('../lib/validation');
+    const validation = require('../lib/validationService');
     function listener(config) {
         RED.nodes.createNode(this, config);
         this.host = RED.nodes.getNode(config.server).host;
@@ -32,31 +32,31 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                if (msg.nem.closeListener === "true") {
-                    listener.close();
+                if (msg.nem.closeListener === true) {
+                    listener.terminate();
                     node.status({ fill: "red", shape: "ring", text: "connection closed" });
                 }
                 else {
-                    listener.open().then(() => {
-                        const addressMsg = node.address || msg.nem.address;
-                        if (validation.addressValidate(addressMsg)) {
+                    const addressMsg = node.address || msg.nem.address;
+                    if (validation.addressValidate(addressMsg)) {
+                        listener.open().then(() => {
                             const address = Address.createFromRawAddress(addressMsg);
-                            listener[node.listenerType](address).subscribe((transaction) => {
-                                msg.nem.transaction = transaction;
+                            listener[node.listenerType](address).subscribe((transactions) => {
+                                msg.nem.transaction = transactions;
                                 node.send(msg);
                             });
                             node.status({ fill: "green", shape: "dot", text: "connected" });
-                        }
-                        else {
-                            node.status({ fill: "red", shape: "ring", text: "error" });
-                            node.error("address is not correct:" + address, msg);
-                        }
-                    },
-                        err => {
-                            node.status({ fill: "red", shape: "ring", text: "error" });
-                            node.error(err);
-                        }
-                    );
+                        },
+                            err => {
+                                node.status({ fill: "red", shape: "ring", text: "error" });
+                                node.error(err);
+                            }
+                        );
+                    }
+                    else {
+                        node.status({ fill: "red", shape: "ring", text: "error" });
+                        node.error("address is not correct:" + address, msg);
+                    }
                 }
             }
             catch (error) {
