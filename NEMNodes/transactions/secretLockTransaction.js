@@ -16,6 +16,7 @@
 
 module.exports = function (RED) {
     const { SecretLockTransaction, Deadline, Mosaic, MosaicId, UInt64, HashType, Address, NetworkType } = require('nem2-sdk');
+    const { sha3_512 } = require('js-sha3')
     const validation = require('../lib/validationService');
     function secretLock(config) {
         RED.nodes.createNode(this, config);
@@ -35,35 +36,38 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                const namespace = node.namespace || msg.nem.namespace;
                 const mosaic = node.mosaic || msg.nem.mosaic;
                 const secret = node.secret || msg.nem.secret;
                 const address = node.address || msg.nem.address;
                 const network = node.network || msg.nem.network;
 
                 //hash secret with hashtype to do
-                const hashedSecret = secret;
-                if (validation.addressValidate(address) && validation.mosaicFullNameValidate(mosaic)) {
-                    const secretLockTransaction = SecretLockTransaction.create(
-                        Deadline.create(),
-                        new Mosaic(new MosaicId(mosaic), UInt64.fromUint(node.amount)),
-                        UInt64.fromUint(node.lockTime),
-                        HashType[node.hashType],
-                        hashedSecret,
-                        Address.createFromRawAddress(address),
-                        NetworkType[network]
-                    );
-                    msg.nem.transaction = secretLockTransaction;
-                    msg.nem.transactionType = "secretLock";
-                    node.send(msg);
-                }
-                else if(!validation.addressValidate(address)){
-                    node.error("address:\"" + address + "\" is not correct", msg)
+                if (node.hashType === "SHA3_512") {
+                    const hashedSecret = sha3_512.create().update(secret).hex();
+                    if (validation.addressValidate(address) && validation.mosaicFullNameValidate(mosaic)) {
+                        const secretLockTransaction = SecretLockTransaction.create(
+                            Deadline.create(),
+                            new Mosaic(new MosaicId(mosaic), UInt64.fromUint(node.amount)),
+                            UInt64.fromUint(node.lockTime),
+                            HashType[node.hashType],
+                            hashedSecret,
+                            Address.createFromRawAddress(address),
+                            NetworkType[network]
+                        );
+                        msg.nem.transaction = secretLockTransaction;
+                        msg.nem.transactionType = "secretLock";
+                        node.send(msg);
+                    }
+                    else if (!validation.addressValidate(address)) {
+                        node.error("address:\"" + address + "\" is not correct", msg)
+                    }
+                    else {
+                        node.error("mosaic:\"" + mosaic + "\" is not correct", msg)
+                    }
                 }
                 else{
-                    node.error("mosaic:\"" + mosaic + "\" is not correct", msg)
+                    node.error("hash algorithm is not supported", msg)
                 }
-
             } catch (error) {
                 node.error(error);
             }
