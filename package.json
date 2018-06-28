@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-nem2",
-    "version": "0.9.7",
+    "version": "0.9.9",
     "description": "NEM blockchain nodes",
     "homepage": "https://nem.io",
     "license": "Apache-2.0",
@@ -47,7 +47,8 @@
             "newBlock": "NEMNodes/listeners/newBlock.js",
             "listener": "NEMNodes/listeners/listener.js",
             "mosaicInfo": "NEMNodes/utility/mosaicInfo.js",
-            "input": "NEMNodes/utility/input.js"
+            "input": "NEMNodes/utility/input.js",
+            "format":"NEMNodes/utility/format.js"
         }
     },
     "dependencies": {
