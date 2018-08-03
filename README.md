@@ -35,7 +35,7 @@ Create a symbolic link:
 
 Run Node-RED:
 
-`node-RED`
+`node-red`
 
 NEM2 Prototyping Tool works on Node-RED 0.18.4.
 
