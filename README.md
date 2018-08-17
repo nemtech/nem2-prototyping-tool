@@ -6,6 +6,8 @@ A collection of Node-RED nodes for prototyping NEM blockchain applications.
 
 It provides a browser-based editor that makes it easy to wire together flows using the wide range of nodes in the palette that can be deployed to its runtime in a single-click.
 
+:warning: The NEM2 Prototyping Tool is not compatible with Node.js version > 8
+
 :warning: NEM2 Prototyping Tool is currently under development and does not encrypt account's private keys. Use it just for prototyping.
 
 ## Installation
@@ -33,7 +35,7 @@ Create a symbolic link:
 
 Run Node-RED:
 
-`node-RED`
+`node-red`
 
 NEM2 Prototyping Tool works on Node-RED 0.18.4.
 
