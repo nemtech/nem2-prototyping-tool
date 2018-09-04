@@ -47,7 +47,7 @@ module.exports = function (RED) {
                     node.error("server and/or address is empty", msg);
                 }
             } catch (error) {
-                node.error(error, msg)
+                node.error(error, msg);
             }
         });
         node.on('close', function () {

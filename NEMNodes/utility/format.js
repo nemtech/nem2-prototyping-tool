@@ -20,7 +20,7 @@ module.exports = function (RED) {
     const { formatBlock } = require('../lib/formatBlockService');
     function format(config) {
         RED.nodes.createNode(this, config);
-        this.host = RED.nodes.getNode(config.server).host;
+        //this.host = RED.nodes.getNode(config.server).host;
         const node = this;
 
         this.on('input', function (msg) {

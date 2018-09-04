@@ -18,7 +18,6 @@ var helper = require("node-red-node-test-helper/index.js");
 var networkConfigNode = require("../../NEMNodes/config/networkConfig.js");
 var signTransactionNode = require("../../NEMNodes/account/signTransaction.js");
 var transferTransactionNode = require("../../NEMNodes/transactions/transferTransaction.js");
-var networkConfigNode = require("../../NEMNodes/config/networkConfig.js");
 
 helper.init(require.resolve('node-red'));
 
