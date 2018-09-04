@@ -22,12 +22,10 @@
             "publicAccount": "NEMNodes/account/publicAccount.js",
             "accountInfo": "NEMNodes/account/accountInfo.js",
             "signTransaction": "NEMNodes/account/signTransaction.js",
-            "allTransactions": "NEMNodes/account/transactions.js",
-            "incomingTransactions": "NEMNodes/account/transactions.js",
-            "outgoingTransactions": "NEMNodes/account/transactions.js",
+            "signData": "NEMNodes/account/signData.js",
+            "verifySignature": "NEMNodes/account/verifySignature.js",
+            "transactions": "NEMNodes/account/transactions.js",
             "generateAccount": "NEMNodes/account/generateAccount.js",
-            "aggregateBondedTransactions": "NEMNodes/account/transactions.js",
-            "unconfirmedTransactions": "NEMNodes/account/transactions.js",
             "serverConfig": "NEMNodes/config/serverConfig.js",
             "networkConfig": "NEMNodes/config/networkConfig.js",
             "announceTransaction": "NEMNodes/transactions/announceTransaction.js",
@@ -38,23 +36,22 @@
             "createSubNamespace": "NEMNodes/transactions/createSubNamespaceTransaction.js",
             "createMosaicDefinition": "NEMNodes/transactions/createMosaicDefinitionTransaction.js",
             "mosaicSupplyChange": "NEMNodes/transactions/mosaicSupplyChangeTransaction.js",
-            "modifyMultisigAccountTransaction": "NEMNodes/transactions/modifyMultisigAccountTransaction.js",
+            "modifyMultisigAccount": "NEMNodes/transactions/modifyMultisigAccountTransaction.js",
             "lockFund": "NEMNodes/transactions/lockFundTransaction.js",
             "secretLock": "NEMNodes/transactions/secretLockTransaction.js",
             "secretProof": "NEMNodes/transactions/secretProofTransaction.js",
-            "configMultisig": "NEMNodes/transactions/configMultisigTransaction.js",
             "cosignature": "NEMNodes/transactions/cosignatureTransaction.js",
             "newBlock": "NEMNodes/listeners/newBlock.js",
             "listener": "NEMNodes/listeners/listener.js",
             "mosaicInfo": "NEMNodes/utility/mosaicInfo.js",
             "input": "NEMNodes/utility/input.js",
-            "format":"NEMNodes/utility/format.js"
+            "format": "NEMNodes/utility/format.js"
         }
     },
     "dependencies": {
         "foo": "0.0.7",
-        "nem2-sdk": "0.9.2",
-        "rxjs": "^5.5.8",
+        "nem2-sdk": "^0.10.1",
+        "rxjs": "^6.2.1",
         "lodash": "4.17.4"
     },
     "devDependencies": {
@@ -62,7 +59,7 @@
         "node-red-node-test-helper": "^0.1.7"
     },
     "engines": {
-        "node": ">=8"
+        "node": ">=8 <=10"
     },
     "scripts": {
         "test": "mocha \"test/**/*.spec.js\""
