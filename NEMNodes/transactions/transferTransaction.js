@@ -21,8 +21,7 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
         this.recipient = config.recipient;
         this.message = config.message;
-        this.mosaic = config.mosaic;
-        this.amount = config.amount;
+        this.mosaics = config.mosaics;
         this.publicKey = config.publicKey;
         this.network = RED.nodes.getNode(config.network).network;
         const node = this;
@@ -32,16 +31,25 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                const address = node.recipient || msg.nem.address;
+                const address = node.recipient || msg.nem.recipient || msg.nem.address || "";
                 const message = node.message || msg.nem.message || "";
                 const publicKey = node.publicKey || msg.nem.publicKey;
-                const mosaic = node.mosaic || msg.nem.mosaic;
+                const mosaics = node.mosaics || msg.nem.mosaics;
                 const network = node.network || msg.nem.network;
-                if (validation.addressValidate(address) && validation.mosaicFullNameValidate(mosaic)) {
+                let mosaicList = [];
+                if (mosaics) {
+                    for (let mosaic in mosaics) {
+                        if (!mosaics.hasOwnProperty(mosaic)) {
+                            continue;
+                        }
+                        mosaicList.push(new Mosaic(new MosaicId(mosaic), UInt64.fromUint(mosaics[mosaic] || 0)));
+                    }
+                }
+                if (validation.addressValidate(address)) {
                     const transferTransaction = TransferTransaction.create(
                         Deadline.create(),
                         Address.createFromRawAddress(address),
-                        [new Mosaic(new MosaicId(mosaic), UInt64.fromUint(node.amount))],
+                        mosaicList,
                         PlainMessage.create(message),
                         NetworkType[network]);
 
@@ -50,11 +58,8 @@ module.exports = function (RED) {
                     msg.nem.publicKey = publicKey;
                     node.send(msg);
                 }
-                else if(!validation.addressValidate(address)){
+                else if (!validation.addressValidate(address)) {
                     node.error("address: \"" + address + "\" is not correct", msg)
-                }
-                else {
-                    node.error("mosaic: \"" + mosaic + "\"  is not correct", msg)
                 }
             } catch (error) {
                 node.error(error);
