@@ -70,6 +70,10 @@
         <dd>The transaction <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transaction_.transaction.html"> object to be included as an <a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_aggregatetransaction_.aggregatetransaction.html">innter transaction</a>. Link multiple inner transaction nodes.</dd>
     </dl>
     <dl class="message-properties">
+        <dt>publicKey <span class="property-type">string</span></dt>
+        <dd>The publicKey where the transaction is send from can be added in the transaction node or can be added by placing the publicAccount node in front of this node or transaction node</dd>
+    </dl>
+    <dl class="message-properties">
         <dt>trigger <span class="property-type">string</span></dt>
         <dd>The trigger is used to create the aggregate transaction object after adding all inner transactions. Drag and drop an inject node and a change node, linking them together. Open the change node and set msg. to "nem.trigger" and to with "finished" string. Link change node with this node.</dd>
     </dl>

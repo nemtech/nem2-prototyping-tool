@@ -16,7 +16,6 @@
 
 module.exports = function (RED) {
     const { AggregateTransaction, PublicAccount, NetworkType, Deadline } = require('nem2-sdk');
-    const validation = require('../lib/validationService');
     function aggregateBonded(config) {
         RED.nodes.createNode(this, config);
         let context = this.context().flow;
@@ -37,7 +36,7 @@ module.exports = function (RED) {
                 if (!account && msg.nem.account) {
                     account = msg.nem.account;
                 }
-                if (msg.nem.transaction && validation.publicKeyValidate(publicKey)) {
+                if (msg.nem.transaction) {
                     const senderInfo = PublicAccount.createFromPublicKey(publicKey, NetworkType[network]);
                     savedTransactions = savedTransactions.concat(msg.nem.transaction.toAggregate(senderInfo));
                     context.set(node.id, savedTransactions);
@@ -46,14 +45,20 @@ module.exports = function (RED) {
                     const aggregateTransaction = AggregateTransaction.createBonded(
                         Deadline.create(),
                         savedTransactions,
-                        NetworkType[network]
+                        NetworkType[network],
+                        []
                     );
-                    msg.nem.transaction = aggregateTransaction;
-                    msg.nem.transactionType = "aggregateBonded";
-                    msg.nem.account = account;
-                    context.set(node.id, []);
-                    account = "";
-                    node.send(msg);
+                    if (aggregateTransaction.innerTransactions.length != 0) {
+                        msg.nem.transaction = aggregateTransaction;
+                        msg.nem.transactionType = "aggregateBonded";
+                        msg.nem.account = account;
+                        context.set(node.id, []);
+                        account = "";
+                        node.send(msg);
+                    }
+                    else {
+                        node.error("There are no inner transactions in the aggregateBonded transaction");
+                    }
                 }
             } catch (error) {
                 node.error(error);
