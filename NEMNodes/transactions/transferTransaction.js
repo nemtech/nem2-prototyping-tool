@@ -17,6 +17,7 @@
 module.exports = function (RED) {
     const { TransferTransaction, Deadline, Address, Mosaic, MosaicId, UInt64, PlainMessage, NetworkType } = require('nem2-sdk');
     const validation = require('../lib/validationService');
+    const _= require('lodash');
     function transfer(config) {
         RED.nodes.createNode(this, config);
         this.recipient = config.recipient;
@@ -34,7 +35,7 @@ module.exports = function (RED) {
                 const address = node.recipient || msg.nem.recipient || msg.nem.address || "";
                 const message = node.message || msg.nem.message || "";
                 const publicKey = node.publicKey || msg.nem.publicKey;
-                const mosaics = node.mosaics || msg.nem.mosaics;
+                const mosaics = _.isEmpty(node.mosaics) ? msg.nem.mosaics : node.mosaics;
                 const network = node.network || msg.nem.network;
                 let mosaicList = [];
                 if (mosaics) {
