@@ -22,7 +22,7 @@ module.exports = function (RED) {
         this.publicKey = config.publicKey;
         this.address = config.address;
         this.namespace = config.namespace;
-        this.mosaic = config.mosaic;
+        this.mosaics = config.mosaics;
         this.trigger = config.trigger;
         const node = this;
 
@@ -33,7 +33,7 @@ module.exports = function (RED) {
                 msg.nem.publicKey = node.publicKey || undefined;
                 msg.nem.address = node.address || undefined;
                 msg.nem.namespace = node.namespace || undefined;
-                msg.nem.mosaic = node.mosaic || undefined;
+                msg.nem.mosaics = node.mosaics || undefined;
                 msg.nem.trigger = node.trigger || undefined;
                 node.send(msg);
             } catch (error) {
