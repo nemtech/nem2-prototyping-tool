@@ -32,14 +32,18 @@ module.exports = function (RED) {
                     node.status({ fill: "red", shape: "ring", text: "connection closed" });
                 }
                 else {
-                    listener.open().then(() => {
-                        listener.newBlock()
-                            .subscribe((block) => {
-                                msg.nem.newBlock = block;
-                                node.send(msg);
-                            });
-                        node.status({ fill: "green", shape: "dot", text: "connected" });
-                    });
+                    listener.open()
+                        .then(() => {
+                            listener.newBlock()
+                                .subscribe((block) => {
+                                    msg.nem.newBlock = block;
+                                    node.send(msg);
+                                });
+                            node.status({ fill: "green", shape: "dot", text: "connected" });
+                        }).catch((error) => {
+                            node.status({ fill: "red", shape: "ring", text: "ERROR, check debug window" });
+                            node.error(error);
+                        });
                 }
             }
             catch (error) {

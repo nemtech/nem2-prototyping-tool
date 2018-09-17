@@ -32,26 +32,27 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                if (msg.nem.closeListener === true) {
-                    listener.terminate();
+                if (msg.nem.closeListener === "true" || msg.nem.closeListener === true) {
+                    listener.close();
                     node.status({ fill: "red", shape: "ring", text: "connection closed" });
                 }
                 else {
                     const addressMsg = node.address || msg.nem.address;
                     if (validation.addressValidate(addressMsg)) {
-                        listener.open().then(() => {
-                            const address = Address.createFromRawAddress(addressMsg);
-                            listener[node.listenerType](address).subscribe((transactions) => {
-                                msg.nem.transaction = transactions;
-                                node.send(msg);
+                        listener.open()
+                            .then(() => {
+                                const address = Address.createFromRawAddress(addressMsg);
+                                listener[node.listenerType](address)
+                                    .subscribe((transactions) => {
+                                        msg.nem.transaction = transactions;
+                                        node.send(msg);
+                                    });
+                                node.status({ fill: "green", shape: "dot", text: "connected" });
+                            })
+                            .catch((error) => {
+                                node.status({ fill: "red", shape: "ring", text: "ERROR, check debug window" });
+                                node.error(error);
                             });
-                            node.status({ fill: "green", shape: "dot", text: "connected" });
-                        },
-                            err => {
-                                node.status({ fill: "red", shape: "ring", text: "error" });
-                                node.error(err);
-                            }
-                        );
                     }
                     else {
                         node.status({ fill: "red", shape: "ring", text: "error" });

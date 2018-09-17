@@ -30,13 +30,18 @@ module.exports = function (RED) {
                     msg.nem = {};
                 }
                 const transactionHttp = new TransactionHttp(node.host);
-                transactionHttp[node.announceType](msg.nem.signedTransaction).subscribe(x => {
-                    msg.nem.announced = x;
-                    let transactionsSend = (context.get(node.id) || 0) + 1;
-                    node.status({ text: "transactions sent:    " + transactionsSend });
-                    context.set(node.id, transactionsSend);
-                    node.send(msg);
-                });
+                transactionHttp[node.announceType](msg.nem.signedTransaction)
+                    .subscribe(x => {
+                        msg.nem.announced = x;
+                        let transactionsSend = (context.get(node.id) || 0) + 1;
+                        node.status({ text: "transactions sent:    " + transactionsSend });
+                        context.set(node.id, transactionsSend);
+                        node.send(msg);
+                    },
+                        error => {
+                            node.status({ fill: "red", shape: "ring", text: "ERROR, check debug window" });
+                            node.error(error);
+                        });
             } catch (error) {
                 node.error(error);
             }
