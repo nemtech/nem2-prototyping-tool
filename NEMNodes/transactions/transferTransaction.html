@@ -21,7 +21,6 @@
             name: { value: "" },
             recipient: { value: "", validate: RED.validators.regex(/^([0-9a-zA-Z]){40}$|^((([0-9a-zA-Z\-]){7}){6}([0-9a-zA-Z]){4}){0,1}$/) },
             message: { value: "", validate: RED.validators.regex(/^.{0,1024}$/) },
-            publicKey: { value: "", validate: RED.validators.regex(/^([0-9A-Fa-f]{2}){32}$|^.{0}$/) },
             network: { value: "", type: "networkConfig" },
             mosaics: { value: {} }
         },
@@ -106,10 +105,6 @@
             <label for="node-input-recipient"><i class="fa fa-address-card"></i> recipient</label>
             <input type="text" id="node-input-recipient" placeholder="Address">
     </div>
-    <div class="form-row" id="node-input-publicKeyView">
-            <label for="node-input-publicKey"><i></i>public key send from</label>
-            <input type="text" id="node-input-publicKey" placeholder="publicKey for aggregate transaction (optional)">
-    </div>
     <div class="form-row" id="node-input-messageView">
             <label for="node-input-message"><i></i>Message</label>
             <input type="text" id="node-input-message" placeholder="Message">
@@ -146,10 +141,6 @@
         <dd>Set it to true if it will be inside an aggregate transaction.</dd>
     </dl>
     <dl class="message-properties">
-        <dt>public key send from<span class="property-type">string</span></dt>
-        <dd>The public key of sender, only when "to aggregate" is selected.</dd>
-    </dl>
-    <dl class="message-properties">
         <dt>message <span class="property-type">string</span></dt>
     <dd>The transaction message.</dd>
     </dl>
@@ -167,10 +158,6 @@
     <dd>The transaction message.</dd>
     </dl>
     <dl class="message-properties">
-        <dt>publicKey <span class="property-type">string</span></dt>
-        <dd>The public key of sender, only when "to aggregate" is selected.</dd>
-    </dl>
-    <dl class="message-properties">
         <dt>mosaic <span class="property-type">string</span></dt>
         <dd>The mosaic full name to transfer and amount (absolute)</dd>
     </dl>
@@ -183,10 +170,4 @@
         <dt>transaction <span class="property-type">object</span></dt>
         <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transfertransaction_.transfertransaction.html">TransferTransaction</a> object.</dd>
     </dl>
-    <dl class="message-properties">
-        <dt>publicKey <span class="property-type">string</span></dt>
-        <dd>The public key of sender, only when "to aggregate" is selected.</dd>
-    </dl>
-
-
 </script>

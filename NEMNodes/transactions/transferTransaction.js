@@ -34,7 +34,7 @@ module.exports = function (RED) {
                 }
                 const address = node.recipient || msg.nem.recipient || msg.nem.address || "";
                 const message = node.message || msg.nem.message || "";
-                const publicKey = node.publicKey || msg.nem.publicKey;
+                const publicKey = msg.nem.publicKey;
                 const mosaics = _.isEmpty(node.mosaics) ? msg.nem.mosaics : node.mosaics;
                 const network = node.network || msg.nem.network;
                 let mosaicList = [];
