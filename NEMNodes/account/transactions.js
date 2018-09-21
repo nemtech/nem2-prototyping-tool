@@ -26,6 +26,7 @@ module.exports = function (RED) {
         this.pageSize = config.pageSize;
         this.transactionsType = config.transactionsType;
         this.allTransactions = config.allTransactions;
+        this.splitTransactions = config.splitTransactions;
         const node = this;
         this.on('input', function (msg) {
             try {
@@ -49,9 +50,18 @@ module.exports = function (RED) {
                             toArray()
                         )
                         .subscribe(transactions => {
-                            msg.nem.transactions = transactions;
-                            msg.nem.transactionType = node.transactionsType;
-                            node.send(msg);
+                            if (node.splitTransactions) {
+                                transactions.forEach(transaction => {
+                                    msg.nem.transaction = transaction;
+                                    msg.nem.transactionType = node.transactionsType;
+                                    node.send(msg);
+                                });
+                            }
+                            else {
+                                msg.nem.transactions = transactions;
+                                msg.nem.transactionType = node.transactionsType;
+                                node.send(msg);
+                            }
                         },
                             error => {
                                 node.status({ fill: "red", shape: "ring", text: "ERROR, check debug window" });
