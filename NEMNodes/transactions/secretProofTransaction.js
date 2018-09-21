@@ -23,7 +23,10 @@ module.exports = function (RED) {
         this.hashType = config.hashType;
         this.network = RED.nodes.getNode(config.network).network;
         const node = this;
-
+        String.prototype.toHex = function () {
+            return this.split('').map(e => e.charCodeAt().toString(16)).join("");
+        };
+        
         this.on('input', function (msg) {
             try {
                 if (typeof msg.nem === "undefined") {
@@ -32,12 +35,11 @@ module.exports = function (RED) {
                 const secret = node.secret || msg.nem.secret;
                 const proof = node.proof || msg.nem.proof;
                 const network = node.network || msg.nem.network;
-
                 const secretProofTransaction = SecretProofTransaction.create(
                     Deadline.create(),
                     HashType[node.hashType],
                     secret,
-                    proof,
+                    proof.toHex(),
                     NetworkType[network]
                 );
                 msg.nem.transaction = secretProofTransaction;

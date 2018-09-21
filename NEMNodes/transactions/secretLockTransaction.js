@@ -16,7 +16,7 @@
 
 module.exports = function (RED) {
     const { SecretLockTransaction, Deadline, Mosaic, MosaicId, UInt64, HashType, Address, NetworkType } = require('nem2-sdk');
-    const { sha3_512 } = require('js-sha3')
+    const { sha3_512 } = require('js-sha3');
     const validation = require('../lib/validationService');
     function secretLock(config) {
         RED.nodes.createNode(this, config);
@@ -41,7 +41,6 @@ module.exports = function (RED) {
                 const address = node.address || msg.nem.address;
                 const network = node.network || msg.nem.network;
 
-                //hash secret with hashtype to do
                 if (node.hashType === "SHA3_512") {
                     const hashedSecret = sha3_512.create().update(secret).hex();
                     if (validation.addressValidate(address) && validation.mosaicFullNameValidate(mosaic)) {
