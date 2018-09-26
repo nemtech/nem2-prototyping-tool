@@ -26,7 +26,8 @@ module.exports = function (RED) {
                 }
                 const cosignatureTransaction = CosignatureTransaction.create(msg.nem.transaction);
                 msg.nem.transaction = cosignatureTransaction;
-                msg.nem.transactionType = "cosignature"
+                msg.nem.transactionType = "cosignature";
+                node.send(msg);
             } catch (error) {
                 node.error(error);
             }
