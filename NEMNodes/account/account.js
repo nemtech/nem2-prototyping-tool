@@ -33,8 +33,8 @@ module.exports = function (RED) {
                     const account = Account.createFromPrivateKey(privateKey, NetworkType[network]);
                     node.status({ text: account.address.pretty() });
                     msg.nem.account = account;
-                    msg.nem.address = msg.nem.address ? msg.nem.address : account.address.address;
-                    msg.nem.publicKey = msg.nem.publicKey ? msg.nem.publicKey : account.publicKey;
+                    msg.nem.address = account.address.address;
+                    msg.nem.publicKey = account.publicKey;
                     node.send(msg);
                 }
                 else if (privateKey) {
