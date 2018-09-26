@@ -37,11 +37,12 @@ module.exports = function (RED) {
                 const publicKey = node.publicKey || msg.nem.publicKey;
                 const mosaic = node.mosaic || msg.nem.mosaic;
                 const network = node.network || msg.nem.network;
+                const amount = node.amount || msg.nem.amount;
                 if (validation.addressValidate(address) && validation.mosaicFullNameValidate(mosaic)) {
                     const transferTransaction = TransferTransaction.create(
                         Deadline.create(),
                         Address.createFromRawAddress(address),
-                        [new Mosaic(new MosaicId(mosaic), UInt64.fromUint(node.amount))],
+                        [new Mosaic(new MosaicId(mosaic), UInt64.fromUint(amount))],
                         PlainMessage.create(message),
                         NetworkType[network]);
 
