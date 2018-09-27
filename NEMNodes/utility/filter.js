@@ -197,18 +197,23 @@ module.exports = function (RED) {
 
         function processMessage(msg) {
             try {
-                var property = getProperty(node, msg);
-
+                let property = getProperty(node, msg);
+                
                 if (Array.isArray(property) && node.arrayPropertyCheck) {
-                    property.forEach(function (element) {
-                        if (node.arrayProperty) {
-                            const arrayPropertyValue = RED.util.getMessageProperty(element, node.arrayProperty);
-                            var onward = applyRules(node, msg, arrayPropertyValue);
-                        } else {
-                            var onward = applyRules(node, msg, element);
-                        }
+                    if (property.length > 0) {
+                        property.forEach(function (element) {
+                            if (node.arrayProperty) {
+                                const arrayPropertyValue = RED.util.getMessageProperty(element, node.arrayProperty);
+                                var onward = applyRules(node, msg, arrayPropertyValue);
+                            } else {
+                                var onward = applyRules(node, msg, element);
+                            }
+                            node.send(onward);
+                        });
+                    } else {
+                        var onward = applyRules(node, msg, property);
                         node.send(onward);
-                    });
+                    }
                 } else if (!node.arrayPropertyCheck) {
                     var onward = applyRules(node, msg, property);
                     node.send(onward);
