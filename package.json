@@ -45,7 +45,8 @@
             "listener": "NEMNodes/listeners/listener.js",
             "mosaicInfo": "NEMNodes/utility/mosaicInfo.js",
             "input": "NEMNodes/utility/input.js",
-            "format": "NEMNodes/utility/format.js"
+            "format": "NEMNodes/utility/format.js",
+            "filter": "NEMNodes/utility/filter.js"
         }
     },
     "dependencies": {
