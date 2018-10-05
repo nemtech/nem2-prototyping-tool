@@ -22,6 +22,7 @@ module.exports = function (RED) {
     function transactions(config) {
         RED.nodes.createNode(this, config);
         this.host = RED.nodes.getNode(config.server).host;
+        this.network = RED.nodes.getNode(config.server).network;
         this.publicKey = config.publicKey;
         this.pageSize = config.pageSize;
         this.transactionsType = config.transactionsType;
