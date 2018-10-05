@@ -15,21 +15,32 @@
  */
 
 module.exports = function (RED) {
-    const { formatTransactions, formatTransaction } = require('../lib/formatTransactionService');
+    const { formatTransactions } = require('../lib/formatTransactionService');
     const { formatAccountInfo } = require('../lib/formatAccountInfoService');
     const { formatBlock } = require('../lib/formatBlockService');
     function format(config) {
         RED.nodes.createNode(this, config);
-        //this.host = RED.nodes.getNode(config.server).host;
+        this.host = RED.nodes.getNode(config.server).host;
+        this.network = RED.nodes.getNode(config.server).network;
         const node = this;
 
         this.on('input', function (msg) {
             try {
                 if (msg.nem.transaction) {
-                    msg.nem.transaction = formatTransaction(msg.nem.transaction);
+                    formatTransactions(msg.nem.transaction, node.host, node.network)
+                        .subscribe(transactions => {
+                            msg.nem.transactions = transactions; node.send(msg);
+                        }, err => {
+                            node.error(err);
+                        });
                 }
                 if (msg.nem.transactions) {
-                    msg.nem.transactions = formatTransactions(msg.nem.transactions);
+                    formatTransactions(msg.nem.transactions, node.host, node.network).
+                        subscribe(transactions => {
+                            msg.nem.transactions = transactions; node.send(msg);
+                        }, err => {
+                            node.error(err);
+                        });
                 }
                 if (msg.nem.newBlock) {
                     msg.nem.newBlock = formatBlock(msg.nem.newBlock);
@@ -37,8 +48,6 @@ module.exports = function (RED) {
                 if (msg.nem.accountInfo) {
                     msg.nem.accountInfo = formatAccountInfo(msg.nem.accountInfo);
                 }
-                node.send(msg);
-
             } catch (error) {
                 node.error(error, msg)
             }
