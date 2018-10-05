@@ -198,28 +198,32 @@ module.exports = function (RED) {
         function processMessage(msg) {
             try {
                 let property = getProperty(node, msg);
-                
-                if (Array.isArray(property) && node.arrayPropertyCheck) {
+                let ruleResult = [];
+                let messages = new Array(node.rules.length);
+                if (node.arrayPropertyCheck && Array.isArray(property)) {
                     if (property.length > 0) {
                         property.forEach(function (element) {
                             if (node.arrayProperty) {
                                 const arrayPropertyValue = RED.util.getMessageProperty(element, node.arrayProperty);
-                                var onward = applyRules(node, msg, arrayPropertyValue);
+                                ruleResult = applyRules(node, msg, arrayPropertyValue);
                             } else {
-                                var onward = applyRules(node, msg, element);
+                                ruleResult = applyRules(node, msg, element);
                             }
-                            node.send(onward);
+                            ruleResult.forEach(function (element, index) {
+                                if (element) {
+                                    messages[index] = element;
+                                }
+                            });
                         });
                     } else {
-                        var onward = applyRules(node, msg, property);
-                        node.send(onward);
+                        messages = applyRules(node, msg, property);
                     }
                 } else if (!node.arrayPropertyCheck) {
-                    var onward = applyRules(node, msg, property);
-                    node.send(onward);
+                    messages = applyRules(node, msg, property);
                 }
+                node.send(messages);
             } catch (err) {
-                node.warn(err);
+                node.error(err);
             }
         }
 
