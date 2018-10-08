@@ -1,8 +1,9 @@
 const { AccountInfo } = require('nem2-sdk');
-const { Observable } = require('rxjs');
-
+//const { Observable, from, of } = require('rxjs');
+//const formatMosaics = require('../lib/formatMosaicService');
+//const map = operators.map;
 module.exports = {
-    formatAccountInfo: function (accountInfo) {
+    formatAccountInfo: function (accountInfo, host, network) {
         if (accountInfo instanceof AccountInfo) {
             accountInfo.address = accountInfo.address.pretty();
             accountInfo.addressHeight = accountInfo.addressHeight.compact();
@@ -11,5 +12,5 @@ module.exports = {
             accountInfo.importanceHeight = accountInfo.importanceHeight.compact();
         }
         return accountInfo;
-    }
+    }//ToDo get mosaicNames
 }
