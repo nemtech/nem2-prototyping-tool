@@ -21,7 +21,6 @@
         defaults: {
             name: { value: "" },
             privateKey: { value: "", validate: RED.validators.regex(/^([0-9A-Fa-f]{2}){32}$|^.{0}$/) },
-            coSign: { value: false },
             network: { value: "", type: "networkConfig" }
         },
         inputs: 1,
@@ -42,10 +41,6 @@
             <label for="node-input-privateKey"><i class="fa fa-key"></i> private key</label>
             <input type="text" id="node-input-privateKey"placeholder="privateKey">
         </div>
-        <div class="form-row" id="node-input-coSignView">
-            <label for="node-input-coSign"><i class="fa fa-handshake-o"></i> coSign</label>
-            <input type="checkbox" id="node-input-coSign" placeholder=false>
-        </div>
         <div class="form-row" id="node-input-nameView">
             <label for="node-input-name"><i class="icon-tag"></i> name</label>
             <input type="text" id="node-input-name"placeholder="name (optional)">
@@ -64,10 +59,6 @@
      <dl class="message-properties">
         <dt>private key <span class="property-type">string</span></dt>
         <dd>The account private key.</dd>
-    </dl>
-    <dl class="message-properties">
-        <dt>cosign <span class="property-type">boolean</span></dt>
-        <dd>If you are cosigning an aggregate bonded transaction.</dd>
     </dl>
     <h3>Inputs</h3>
     <dl class="message-properties">

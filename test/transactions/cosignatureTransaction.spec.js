@@ -16,7 +16,7 @@
 var should = require("should");
 var helper = require("node-red-node-test-helper/index.js");
 var cosignatureTransactionNode = require("../../NEMNodes/transactions/cosignatureTransaction.js");
-var networkConfigNode = require("../../NEMNodes/config/networkConfig.js");
+//var networkConfigNode = require("../../NEMNodes/config/networkConfig.js");
 
 helper.init(require.resolve('node-red'));
 
@@ -25,13 +25,13 @@ describe('cosignatureTransaction Node', function () {
         helper.unload();
     });
     const configuredFlow =
-        [{ id: "n1", type: "networkConfig" },
-        { id: "n2", type: "cosignature", network: "n1", name: "cosignature" }];
+        [{ id: "n1", type: "cosignature", name: "cosignature", wires: [["n2"]] },
+        { id: "n2", type: "helper" }];
 
     it('should be loaded', function (done) {
-        helper.load([cosignatureTransactionNode, networkConfigNode], configuredFlow, function () {
-            var n2 = helper.getNode("n2");
-            n2.should.have.property('name', 'cosignature');
+        helper.load([cosignatureTransactionNode], configuredFlow, function () {
+            var n1 = helper.getNode("n1");
+            n1.should.have.property('name', 'cosignature');
             done();
         });
     });

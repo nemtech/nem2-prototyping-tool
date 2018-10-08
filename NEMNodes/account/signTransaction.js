@@ -15,13 +15,12 @@
  */
 
 module.exports = function (RED) {
-    const { Account, CosignatureTransaction, TransactionType, NetworkType } = require('nem2-sdk');
+    const { Account, NetworkType } = require('nem2-sdk');
     const validation = require('../lib/validationService');
     function signTransaction(config) {
         RED.nodes.createNode(this, config);
         this.network = RED.nodes.getNode(config.network).network;
         this.privateKey = config.privateKey;
-        this.coSign = config.coSign;
         let node = this;
 
         this.on('input', function (msg) {
@@ -33,16 +32,16 @@ module.exports = function (RED) {
                 const network = node.network || msg.nem.network;
                 const account = validation.privateKeyValidate(privateKey) ? Account.createFromPrivateKey(privateKey, NetworkType[network]) : msg.nem.account;
                 if (account) {
-                    if (!node.coSign && msg.nem.hasOwnProperty("transaction")) {
-                        const signedTransaction = account.sign(msg.nem.transaction);
-                        msg.nem.signedTransaction = signedTransaction;
-                        node.send(msg);
-                    }
-                    else if (account && node.coSign && msg.nem.transaction.type === TransactionType.AGGREGATE_BONDED) {
-                        const cosignatureTransaction = CosignatureTransaction.create(msg.nem.transaction);
-                        const signedTransaction = account.signCosignatureTransaction(cosignatureTransaction);
-                        msg.nem.signedTransaction = signedTransaction;
-                        node.send(msg);
+                    if (msg.nem.hasOwnProperty("transaction")) {
+                        if (msg.nem.transaction.transactionToCosign) {
+                            const signedTransaction = account.signCosignatureTransaction(msg.nem.transaction.transactionToCosign);
+                            msg.nem.signedTransaction = signedTransaction;
+                            node.send(msg);
+                        } else {
+                            const signedTransaction = account.sign(msg.nem.transaction);
+                            msg.nem.signedTransaction = signedTransaction;
+                            node.send(msg);
+                        }
                     }
                     else {
                         node.error("something went wrong with the transaction", msg);
