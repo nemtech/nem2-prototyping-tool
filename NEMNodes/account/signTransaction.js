@@ -34,7 +34,7 @@ module.exports = function (RED) {
                 if (account) {
                     if (msg.nem.hasOwnProperty("transaction")) {
                         if (msg.nem.transaction.transactionToCosign) {
-                            const signedTransaction = account.signCosignatureTransaction(msg.nem.transaction.transactionToCosign);
+                            const signedTransaction = account.signCosignatureTransaction(msg.nem.transaction);
                             msg.nem.signedTransaction = signedTransaction;
                             node.send(msg);
                         } else {
