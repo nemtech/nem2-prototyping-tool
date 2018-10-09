@@ -31,7 +31,7 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                if (msg.nem.closeListener === true) {
+                if (msg.nem.closeListener) {
                     listener.close();
                     context.set(node.id, false);
                     node.status({ fill: "red", shape: "ring", text: "connection closed" });
