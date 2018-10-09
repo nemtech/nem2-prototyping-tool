@@ -57,7 +57,7 @@ describe('filter Node', function () {
             var helperNode = helper.getNode("helperNode");
             helperNode.on("input", function (msg) {
                 try {
-                    if (shouldReceive === true) {
+                    if (shouldReceive) {
                         should.equal(msg.payload, sendPayload);
                         done();
                     } else {
@@ -68,7 +68,7 @@ describe('filter Node', function () {
                 }
             });
             filterNode.receive({ payload: sendPayload });
-            if (shouldReceive === false) {
+            if (!shouldReceive) {
                 setTimeout(function () {
                     done();
                 }, 200);

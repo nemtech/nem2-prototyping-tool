@@ -16,11 +16,11 @@
 
 module.exports = function (RED) {
     const { PublicAccount, NetworkType } = require('nem2-sdk');
-    const validation = require("../lib/validationService")
+    const validation = require("../lib/validationService");
     function publicAccount(config) {
         RED.nodes.createNode(this, config);
         this.publicKey = config.publicKey;
-        this.network = RED.nodes.getNode(config.network).network;
+        this.network = RED.nodes.getNode(config.network).network;   
         let node = this;
 
         this.on('input', function (msg) {

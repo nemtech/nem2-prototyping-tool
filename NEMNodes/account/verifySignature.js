@@ -36,7 +36,7 @@ module.exports = function (RED) {
                 const network = node.network || msg.nem.network;
 
                 if (!validation.publicKeyValidate(publicKey))
-                    errorText = "publicKey is empty or not correct:" + publicKey + ", "
+                    errorText = "publicKey is empty or not correct:" + publicKey + ", ";
                 if (!data)
                     errorText += "data is empty, ";
                 if (!signature)
