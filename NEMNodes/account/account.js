@@ -35,6 +35,8 @@ module.exports = function (RED) {
                     msg.nem.account = account;
                     msg.nem.address = account.address.address;
                     msg.nem.publicKey = account.publicKey;
+                    msg.nem.account.keyPair.privateKey = account.privateKey;
+                    msg.nem.account.keyPair.publicKey = account.publicKey;
                     node.send(msg);
                 }
                 else if (privateKey) {

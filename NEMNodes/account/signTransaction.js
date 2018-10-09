@@ -28,9 +28,9 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                const privateKey = node.privateKey || msg.nem.privateKey;
+                const privateKey = node.privateKey || msg.nem.privateKey || (msg.nem.account && msg.nem.account.keyPair ? msg.nem.account.keyPair.privateKey : undefined);
                 const network = node.network || msg.nem.network;
-                const account = validation.privateKeyValidate(privateKey) ? Account.createFromPrivateKey(privateKey, NetworkType[network]) : msg.nem.account;
+                const account = validation.privateKeyValidate(privateKey) ? Account.createFromPrivateKey(privateKey, NetworkType[network]) : undefined;
                 if (account) {
                     if (msg.nem.hasOwnProperty("transaction")) {
                         if (msg.nem.transaction.transactionToCosign) {

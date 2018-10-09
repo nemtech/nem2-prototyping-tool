@@ -29,7 +29,7 @@ module.exports = function (RED) {
             try {
                 msg.nem = (typeof msg.nem === 'undefined') ? {} : msg.nem;
 
-                const privateKey = node.privateKey || msg.nem.privateKey;
+                const privateKey = node.privateKey || msg.nem.privateKey || (msg.nem.account && msg.nem.account.keyPair ? msg.nem.account.keyPair.privateKey : undefined);
                 const data = node.data || msg.nem.data || msg.payload;
                 const network = node.network || msg.nem.network;
 
