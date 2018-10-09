@@ -16,11 +16,11 @@
 
 module.exports = function (RED) {
     const { PublicAccount, NetworkType } = require('nem2-sdk');
-    const validation = require("../lib/validation.js")
+    const validation = require("../lib/validationService");
     function publicAccount(config) {
         RED.nodes.createNode(this, config);
         this.publicKey = config.publicKey;
-        this.network = RED.nodes.getNode(config.network).network;
+        this.network = RED.nodes.getNode(config.network).network;   
         let node = this;
 
         this.on('input', function (msg) {
@@ -34,8 +34,8 @@ module.exports = function (RED) {
                     const publicAccount = PublicAccount.createFromPublicKey(publicKey, NetworkType[network]);
                     node.status({ text: publicAccount.address.pretty() });
                     msg.nem.publicAccount = publicAccount;
-                    msg.nem.address = msg.nem.address ? msg.nem.address : publicAccount.address.address;
-                    msg.nem.publicKey = msg.nem.publicKey ? msg.nem.publicKey : publicAccount.publicKey;
+                    msg.nem.address = publicAccount.address.address;
+                    msg.nem.publicKey = publicAccount.publicKey;
                     node.send(msg);
                 }
                 else if (publicKey) {

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 -->
-
 <script type="text/javascript">
     RED.nodes.registerType('transfer', {
         category: 'NEM Transactions',
@@ -22,11 +21,8 @@
             name: { value: "" },
             recipient: { value: "", validate: RED.validators.regex(/^([0-9a-zA-Z]){40}$|^((([0-9a-zA-Z\-]){7}){6}([0-9a-zA-Z]){4}){0,1}$/) },
             message: { value: "", validate: RED.validators.regex(/^.{0,1024}$/) },
-            amount: { value: 0, validate: RED.validators.number() },
-            mosaic: { value: "", validate: RED.validators.regex(/^([0-9a-z_\-]{1,64})((\.([0-9a-z_\-]{1,64})){0,2})(:[0-9a-z_\-]{1,64}){1}$|^.{0}$/) },
-            publicKey: { value: "", validate: RED.validators.regex(/^([0-9A-Fa-f]{2}){32}$|^.{0}$/) },
             network: { value: "", type: "networkConfig" },
-            toAggregate: { value: false }
+            mosaics: { value: {} }
         },
         inputs: 1,
         outputs: 1,
@@ -36,51 +32,93 @@
             return this.name || "transfer transaction";
         },
         oneditprepare: function () {
-            $("#node-input-toAggregate").on("change", function () {
-                if (this.checked) {
-                    $("#node-input-publicKeyView").show();
+            function resizeRule(rule) {
+                var newWidth = rule.width();
+                rule.find('.red-ui-typedInput').typedInput("width", (newWidth - 15) / 2);
+            }
+            var mosaicList = $("#node-input-mosaics-container").css('min-height', '150px').css('min-width', '450px').editableList({
+                addItem: function (container, i, mosaic) {
+                    var row = $('<div/>').css({
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap'
+                    }).appendTo(container);
+                    var mosaicName = $('<input/>', { class: "node-input-mosaic-name", type: "text" })
+                        .appendTo(row)
+                        .typedInput({ types: [{ value: "str", label: "mosaic name", validate: /^([0-9a-z_\-]{1,64})((\.([0-9a-z_\-]{1,64})){0,2})(:[0-9a-z_\-]{1,64}){1}$|^.{0}$/ }] });
+                    var mosaicAmount = $('<input/>', { class: "node-input-mosaic-amount", type: "text", style: "margin-left: 10px" })
+                        .appendTo(row)
+                        .typedInput({ types: [{ value: "num", label: "amount", validate: RED.validators.number() }] });
+                    mosaicAmount.typedInput('value', mosaic.v);
+                    mosaicName.typedInput('value', mosaic.h);
+                    resizeRule(container);
+                },
+                resizeItem: resizeRule,
+                removable: true
+            });
+            if (this.mosaics) {
+                for (var key in this.mosaics) {
+                    if (!this.mosaics.hasOwnProperty(key)) {
+                        continue;
+                    }
+                    mosaicList.editableList('addItem', { h: key, v: this.mosaics[key] });
                 }
-                else {
-                    $("#node-input-publicKeyView").hide();
+            }
+        },
+        oneditsave: function () {
+            var mosaics = $("#node-input-mosaics-container").editableList('items');
+            var node = this;
+            node.mosaics = {};
+            mosaics.each(function (i) {
+                var mosaic = $(this);
+                var keyType = mosaic.find(".node-input-mosaic-name").typedInput('type');
+                var keyValue = mosaic.find(".node-input-mosaic-name").typedInput('value');
+                var valueType = mosaic.find(".node-input-mosaic-amount").typedInput('type');
+                var valueValue = mosaic.find(".node-input-mosaic-amount").typedInput('value');
+                var key = keyValue;
+                var value = valueValue;
+                //key = keyValue;
+                //value = valueValue;
+                if (key !== '') {
+                    node.mosaics[key] = value;
                 }
             });
+        },
+        oneditresize: function (size) {
+            var rows = $("#dialog-form>div:not(.node-input-mosaics-container-row)");
+            var height = size.height;
+            for (var i = 0; i < rows.size(); i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            var editorRow = $("#dialog-form>div.node-input-mosaics-container-row");
+            height -= (parseInt(editorRow.css("marginTop")) + parseInt(editorRow.css("marginBottom")));
+            $("#node-input-mosaics-container").editableList('height', height);
         }
     });
 </script>
 
 <script type="text/x-red" data-template-name="transfer">
     <div class="form-row" id="node-input-networkView" >
-        <label for="node-input-server"><i></i> network</label>
-        <input type="text" id="node-input-network">
+            <label for="node-input-server"><i></i> network</label>
+            <input type="text" id="node-input-network">
     </div>
-            <div class="form-row" id="node-input-recipientView">
-                    <label for="node-input-recipient"><i class="fa fa-address-card"></i> recipient</label>
-                    <input type="text" id="node-input-recipient" placeholder="Address">
-                </div>
-                <div class="form-row" id="node-input-toAggregateView">
-                    <label for="node-input-toAggregate"><i></i>to aggregate</label>
-                    <input type="checkbox" id="node-input-toAggregate">
-                </div>
-                <div class="form-row" id="node-input-publicKeyView">
-                        <label for="node-input-publicKey"><i></i>public key send from</label>
-                        <input type="text" id="node-input-publicKey" placeholder="publicKey for aggregate transaction (optional)">
-                </div>
-                <div class="form-row" id="node-input-messageView">
-                        <label for="node-input-message"><i></i>Message</label>
-                        <input type="text" id="node-input-message" placeholder="Message">
-                </div>
-                    <div class="form-row"id="node-input-mosaicView" >
-                        <label for="node-input-mosaic"><i></i> Mosaic</label>
-                        <input type="text" id="node-input-mosaic" placeholder="namespace:mosaic">
-                    </div>
-                    <div class="form-row" id="node-input-amountView">
-                            <label for="node-input-amount"><i></i>Amount (can be zero)</label>
-                            <input type="number" id="node-input-amount" placeholder=0>
-                        </div>
-                        <div class="form-row" id="node-input-nameView">
-                            <label for="node-input-name"><i class="icon-tag"></i>name</label>
-                            <input type="text" id="node-input-name"placeholder="name (optional)">
-                        </div>
+    <div class="form-row" id="node-input-recipientView">
+            <label for="node-input-recipient"><i class="fa fa-address-card"></i> recipient</label>
+            <input type="text" id="node-input-recipient" placeholder="Address">
+    </div>
+    <div class="form-row" id="node-input-messageView">
+            <label for="node-input-message"><i></i>Message</label>
+            <input type="text" id="node-input-message" placeholder="Message">
+    </div>
+    <div class="form-row" style="margin-bottom:0;">
+            <label><i class="fa fa-list"></i> <span>Mosaics</span></label>
+    </div>
+    <div class="form-row node-input-mosaics-container-row">
+        <ol id="node-input-mosaics-container"></ol>
+    </div>
+    <div class="form-row" id="node-input-nameView">
+            <label for="node-input-name"><i class="icon-tag"></i>name</label>
+            <input type="text" id="node-input-name"placeholder="name (optional)">
+    </div>
 
 </script>
 
@@ -103,20 +141,12 @@
         <dd>Set it to true if it will be inside an aggregate transaction.</dd>
     </dl>
     <dl class="message-properties">
-        <dt>public key send from<span class="property-type">string</span></dt>
-        <dd>The public key of sender, only when "to aggregate" is selected.</dd>
-    </dl>
-    <dl class="message-properties">
         <dt>message <span class="property-type">string</span></dt>
     <dd>The transaction message.</dd>
     </dl>
     <dl class="message-properties">
-        <dt>mosaic <span class="property-type">string</span></dt>
-        <dd>The mosaic name to transfer.</dd>
-    </dl>
-    <dl class="message-properties">
-        <dt>amount <span class="property-type">string</span></dt>
-        <dd>The mosaic amount, can be zero.</dd>
+        <dt>mosaics <span class="property-type">string</span></dt>
+        <dd>The mosaics full name to transfer and the amount (absolute)</dd>
     </dl>
     <h3>Inputs</h3>
     <dl class="message-properties">
@@ -128,16 +158,8 @@
     <dd>The transaction message.</dd>
     </dl>
     <dl class="message-properties">
-        <dt>publicKey <span class="property-type">string</span></dt>
-        <dd>The public key of sender, only when "to aggregate" is selected.</dd>
-    </dl>
-    <dl class="message-properties">
         <dt>mosaic <span class="property-type">string</span></dt>
-        <dd>The mosaic name to transfer.</dd>
-    </dl>
-    <dl class="message-properties">
-        <dt>amount <span class="property-type">string</span></dt>
-        <dd>The mosaic amount, can be zero.</dd>
+        <dd>The mosaic full name to transfer and amount (absolute)</dd>
     </dl>
     <h3>Outputs</h3>
     <dl class="message-properties">
@@ -148,10 +170,4 @@
         <dt>transaction <span class="property-type">object</span></dt>
         <dd><a href="https://nemtech.github.io/nem2-sdk-typescript-javascript/classes/_model_transaction_transfertransaction_.transfertransaction.html">TransferTransaction</a> object.</dd>
     </dl>
-    <dl class="message-properties">
-        <dt>publicKey <span class="property-type">string</span></dt>
-        <dd>The public key of sender, only when "to aggregate" is selected.</dd>
-    </dl>
-
-
 </script>

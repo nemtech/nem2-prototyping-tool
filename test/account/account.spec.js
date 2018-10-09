@@ -59,8 +59,8 @@ describe('account Node', function () {
             n3.on("input", function (msg) {
                 try {
                     msg.nem.account.address.should.have.property('address', accountInformation.address);
-                    msg.nem.account.privateKey.should.be.eql(accountInformation.privateKey);
-                    msg.nem.account.publicKey.should.be.eql(accountInformation.publicKey);
+                    msg.nem.account.keyPair.privateKey.should.be.eql(accountInformation.privateKey);
+                    msg.nem.account.keyPair.publicKey.should.be.eql(accountInformation.publicKey);
                     done();
                 } catch (error) {
                     done(error);
@@ -77,8 +77,8 @@ describe('account Node', function () {
             n3.on("input", function (msg) {
                 try {
                     msg.nem.account.address.should.have.property('address', accountInformation.address);
-                    msg.nem.account.privateKey.should.be.eql(accountInformation.privateKey);
-                    msg.nem.account.publicKey.should.be.eql(accountInformation.publicKey);
+                    msg.nem.account.keyPair.privateKey.should.be.eql(accountInformation.privateKey);
+                    msg.nem.account.keyPair.publicKey.should.be.eql(accountInformation.publicKey);
                     done();
                 } catch (error) {
                     done(error);
@@ -95,8 +95,8 @@ describe('account Node', function () {
             n3.on("input", function (msg) {
                 try {
                     msg.nem.account.address.should.have.property('address', accountInformation.address);
-                    msg.nem.account.privateKey.should.be.eql(accountInformation.privateKey);
-                    msg.nem.account.publicKey.should.be.eql(accountInformation.publicKey);
+                    msg.nem.account.keyPair.privateKey.should.be.eql(accountInformation.privateKey);
+                    msg.nem.account.keyPair.publicKey.should.be.eql(accountInformation.publicKey);
                     done();
                 } catch (error) {
                     done(error);

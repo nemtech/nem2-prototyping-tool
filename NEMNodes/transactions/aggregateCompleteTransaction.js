@@ -16,7 +16,6 @@
 
 module.exports = function (RED) {
     const { AggregateTransaction, PublicAccount, NetworkType, Deadline } = require('nem2-sdk');
-    const validation = require('../lib/validation');
     function aggregateComplete(config) {
         RED.nodes.createNode(this, config);
         let context = this.context().flow;
@@ -37,8 +36,8 @@ module.exports = function (RED) {
                 if (!account && msg.nem.account) {
                     account = msg.nem.account;
                 }
-                if (msg.nem.transaction && validation.publicKeyValidate(publicKey)) {
-                    publicAccount = msg.nem.publicAccount || PublicAccount.createFromPublicKey(publicKey, NetworkType[network]);
+                if (msg.nem.transaction) {
+                    publicAccount = PublicAccount.createFromPublicKey(publicKey, NetworkType[network]);
                     savedTransactions = savedTransactions.concat(msg.nem.transaction.toAggregate(publicAccount));
                     context.set(node.id, savedTransactions);
                 }
@@ -49,12 +48,17 @@ module.exports = function (RED) {
                         NetworkType[network],
                         []
                     );
-                    msg.nem.transactionType = "aggregateComplete";
-                    msg.nem.transaction = aggregateTransaction;
-                    msg.nem.account = account;
-                    context.set(node.id, []);
-                    account = "";
-                    node.send(msg);
+                    if (aggregateTransaction.innerTransactions.length != 0) {
+                        msg.nem.transactionType = "aggregateComplete";
+                        msg.nem.transaction = aggregateTransaction;
+                        msg.nem.account = account;
+                        context.set(node.id, []);
+                        account = "";
+                        node.send(msg);
+                    }
+                    else {
+                        node.error("There are no inner transactions in the aggregateComplete transaction");
+                    }
                 }
             } catch (error) {
                 node.error(error);

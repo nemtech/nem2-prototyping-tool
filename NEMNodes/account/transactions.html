@@ -24,8 +24,8 @@
             server: { value: "", type: "serverConfig" },
             allTransactions: { value: false },
             pageSize: { value: 10, validate: RED.validators.number() },
-            transactionsType: { value: "transactions" }
-
+            transactionsType: { value: "transactions" },
+            splitTransactions: { value: false }
         },
         inputs: 1,
         outputs: 1,
@@ -40,13 +40,43 @@
                 }
                 else { $("#node-input-pageSizeView").show(); }
             });
+        },
+        button: {
+            enabled: function () {
+                return !this.changed
+            },
+            onclick: function () {
+                if (this.changed) {
+                    return RED.notify(RED._("notification.warning", { message: RED._("notification.warnings.undeployedChanges") }), "warning");
+                }
+                var label = (this.name || "transactions");
+                var node = this;
+                $.ajax({
+                    url: "inject/" + this.id,
+                    type: "POST",
+                    success: function (resp, textStatus, xhr) {
+                        RED.notify(node._("succesfully started " + label), "success");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status == 404) {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.not-deployed") }), "error");
+                        } else if (jqXHR.status == 500) {
+                            RED.notify(node._("common.notification.error", { message: node._("inject.errors.failed") }), "error");
+                        } else if (jqXHR.status == 0) {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.no-response") }), "error");
+                        } else {
+                            RED.notify(node._("common.notification.error", { message: node._("common.notification.errors.unexpected", { status: jqXHR.status, message: textStatus }) }), "error");
+                        }
+                    }
+                });
+            }
         }
     });
 </script>
 
 
 <script type="text/x-red" data-template-name="transactions">
-    
+
     <div class="form-row">
         <label for="node-input-server"><i class="icon-globe"></i> Server</label>
         <input type="text" id="node-input-server">
@@ -70,9 +100,13 @@
         <input type="checkbox" id="node-input-allTransactions">
     </div>
     <div class="form-row"id="node-input-pageSizeView">
-        <label for="node-input-pageSize"><i></i>last x transactions</label>
+        <label for="node-input-pageSize"><i></i>last x transactions up to 100</label>
         <input type="number" id="node-input-pageSize" placeholder="10">
     </div>  
+    <div class="form-row"id="node-input-splitTransactionsView">
+        <label for="node-input-splitTransactions"><i></i>split transactions</label>
+        <input type="checkbox" id="node-input-splitTransactions">
+    </div>
     <div class="form-row" id="node-input-nameView">
         <label for="node-input-name"><i class="icon-tag"></i>name</label>
         <input type="text" id="node-input-name"placeholder="name (optional)">
@@ -103,7 +137,11 @@
     </dl>
     <dl class="message-properties">
         <dt>last x transactions <span class="property-type">string</span></dt>
-        <dd>Number of transactions to retrieve. Minimum 10.</dd>
+        <dd>Number of transactions to retrieve. Minimum 10. Maximum 100</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>split transactions<span class="property-type">string</span></dt>
+        <dd>It will split the array of transactions into single transaction. A message will be send for every transaction</dd>
     </dl>
 
     <h3>Inputs</h3>

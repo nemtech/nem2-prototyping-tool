@@ -18,7 +18,7 @@ module.exports = function (RED) {
 
     function accountInfo(config) {
         const { AccountHttp, Address } = require('nem2-sdk');
-        const validation = require('../lib/validation');
+        const validation = require('../lib/validationService');
         RED.nodes.createNode(this, config);
         this.host = RED.nodes.getNode(config.server).host;
         this.address = config.address;
@@ -33,12 +33,16 @@ module.exports = function (RED) {
                 const address = node.address || msg.nem.address;
                 if (node.host && validation.addressValidate(address)) {
                     var accountHttp = new AccountHttp(node.host);
-                    accountHttp[node.accountType](Address.createFromRawAddress(address)
-                    ).subscribe(accountInfo => {
-                        msg.nem.accountInfo = accountInfo;
-                        node.send(msg);
-                        this.status({ text: address });
-                    });
+                    accountHttp[node.accountType](Address.createFromRawAddress(address))
+                        .subscribe(accountInfo => {
+                            msg.nem.accountInfo = accountInfo;
+                            node.send(msg);
+                            this.status({ text: address });
+                        },
+                            error => {
+                                node.status({ fill: "red", shape: "ring", text: "ERROR, check debug window" });
+                                node.error(error);
+                            });
                 }
                 else if (address) {
                     node.error("address is wrong " + address, msg);
@@ -47,7 +51,7 @@ module.exports = function (RED) {
                     node.error("server and/or address is empty", msg);
                 }
             } catch (error) {
-                node.error(error, msg)
+                node.error(error, msg);
             }
         });
         node.on('close', function () {

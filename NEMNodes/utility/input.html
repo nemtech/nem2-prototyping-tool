@@ -24,12 +24,12 @@
             publicKey: { value: "", validate: RED.validators.regex(/^([0-9A-Fa-f]{2}){32}$|^.{0}$/) },
             address: { value: "", validate: RED.validators.regex(/^([0-9a-zA-Z]){40}$|^((([0-9a-zA-Z\-]){7}){6}([0-9a-zA-Z]){4}){0,1}$/) },
             namespace: { value: "", validate: RED.validators.regex(/^([0-9a-z_\-]{0,64})(\.[0-9a-z_\-]{1,64}){0,2}$/) },
-            mosaic: { value: "", validate: RED.validators.regex(/^([0-9a-z_\-]{1,64})((\.([0-9a-z_\-]{1,64})){0,2})(:[0-9a-z_\-]{1,64}){1}$|^.{0}$/) },
+            mosaics: { value: {} },
             trigger: { value: "" }
         },
         inputs: 0,
         outputs: 1,
-        icon: "face.png",
+        icon: "Input-White.png",
         label: function () {
             return this.name || "input";
         },
@@ -62,6 +62,68 @@
                     }
                 });
             }
+        },
+        oneditprepare: function () {
+            function resizeRule(rule) {
+                var newWidth = rule.width();
+                rule.find('.red-ui-typedInput').typedInput("width", (newWidth - 15) / 2);
+            }
+            var mosaicList = $("#node-input-mosaics-container").css('min-height', '150px').css('min-width', '450px').editableList({
+                addItem: function (container, i, mosaic) {
+                    var row = $('<div/>').css({
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap'
+                    }).appendTo(container);
+                    var mosaicName = $('<input/>', { class: "node-input-mosaic-name", type: "text" })
+                        .appendTo(row)
+                        .typedInput({ types: [{ value: "str", label: "mosaic name", validate: /^([0-9a-z_\-]{1,64})((\.([0-9a-z_\-]{1,64})){0,2})(:[0-9a-z_\-]{1,64}){1}$|^.{0}$/ }] });
+                    var mosaicAmount = $('<input/>', { class: "node-input-mosaic-amount", type: "text", style: "margin-left: 10px" })
+                        .appendTo(row)
+                        .typedInput({ types: [{ value: "num", label: "amount", validate: RED.validators.number() }] });
+                    mosaicAmount.typedInput('value', mosaic.v);
+                    mosaicName.typedInput('value', mosaic.h);
+                    resizeRule(container);
+                },
+                resizeItem: resizeRule,
+                removable: true
+            });
+            if (this.mosaics) {
+                for (var key in this.mosaics) {
+                    if (!this.mosaics.hasOwnProperty(key)) {
+                        continue;
+                    }
+                    mosaicList.editableList('addItem', { h: key, v: this.mosaics[key] });
+                }
+            }
+        },
+        oneditsave: function () {
+            var mosaics = $("#node-input-mosaics-container").editableList('items');
+            var node = this;
+            node.mosaics = {};
+            mosaics.each(function (i) {
+                var mosaic = $(this);
+                var keyType = mosaic.find(".node-input-mosaic-name").typedInput('type');
+                var keyValue = mosaic.find(".node-input-mosaic-name").typedInput('value');
+                var valueType = mosaic.find(".node-input-mosaic-amount").typedInput('type');
+                var valueValue = mosaic.find(".node-input-mosaic-amount").typedInput('value');
+                var key = keyValue;
+                var value = valueValue;
+                //key = keyValue;
+                //value = valueValue;
+                if (key !== '') {
+                    node.mosaics[key] = value;
+                }
+            });
+        },
+        oneditresize: function (size) {
+            var rows = $("#dialog-form>div:not(.node-input-mosaics-container-row)");
+            var height = size.height;
+            for (var i = 0; i < rows.size(); i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            var editorRow = $("#dialog-form>div.node-input-mosaics-container-row");
+            height -= (parseInt(editorRow.css("marginTop")) + parseInt(editorRow.css("marginBottom")));
+            $("#node-input-mosaics-container").editableList('height', height);
         }
     });
 </script>
@@ -83,9 +145,11 @@
         <label for="node-input-namespace"><i></i>namespace</label>
         <input type="text" id="node-input-namespace" placeholder="namespace">
     </div>
-    <div class="form-row">
-        <label for="node-input-mosaic"><i></i> mosaic</label>
-        <input type="text" id="node-input-mosaic" placeholder="namespace:mosaic">
+    <div class="form-row" style="margin-bottom:0;">
+        <label><i class="fa fa-list"></i> <span>Mosaics</span></label>
+    </div>
+    <div class="form-row node-input-mosaics-container-row">
+        <ol id="node-input-mosaics-container"></ol>
     </div>
     <div class="form-row"id="node-input-triggerView">
         <label for="node-input-trigger"><i class="icon-play"></i>trigger</label>

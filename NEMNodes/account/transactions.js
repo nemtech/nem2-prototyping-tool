@@ -16,14 +16,18 @@
 
 module.exports = function (RED) {
     const { PublicAccount, AccountHttp, QueryParams, NetworkType } = require('nem2-sdk');
-    const validation = require('../lib/validation');
+    const { concatMap, expand, toArray } = require("rxjs/operators");
+    const { EMPTY } = require("rxjs");
+    const validation = require('../lib/validationService');
     function transactions(config) {
         RED.nodes.createNode(this, config);
         this.host = RED.nodes.getNode(config.server).host;
+        this.network = RED.nodes.getNode(config.server).network;
         this.publicKey = config.publicKey;
         this.pageSize = config.pageSize;
         this.transactionsType = config.transactionsType;
         this.allTransactions = config.allTransactions;
+        this.splitTransactions = config.splitTransactions;
         const node = this;
         this.on('input', function (msg) {
             try {
@@ -32,34 +36,38 @@ module.exports = function (RED) {
                 }
                 const publicKey = node.publicKey || msg.nem.publicKey;
                 if (validation.publicKeyValidate(publicKey)) {
-                    const publicAccount = msg.nem.publicAccount || PublicAccount.createFromPublicKey(publicKey, NetworkType[node.network]);
+                    const publicAccount = PublicAccount.createFromPublicKey(publicKey, NetworkType[node.network]);
                     const accountHttp = new AccountHttp(node.host);
-                    if (node.allTransactions) {
+                    if (node.pageSize > 100 || node.allTransactions) {
                         node.pageSize = 100;
                     }
-                    accountHttp[node.transactionsType](publicAccount, new QueryParams(node.pageSize)).subscribe(transactions => {
-                        if (node.allTransactions) {
-                            getNextTransactions(transactions, transactions[transactions.length - 1].transactionInfo.id, node.transactionsType);
-                        }
-                        else {
-                            msg.nem.transactions = transactions;
-                            msg.nem.transactionsType = node.transactionsType;
-                            node.send(msg);
-                        }
-                    });
-                    function getNextTransactions(transactionList, transactionId, transactionsType) {
-                        accountHttp[transactionsType](publicAccount, new QueryParams(node.pageSize, transactionId)).subscribe(transactions => {
-                            transactionList = transactionList.concat(transactions);
-                            if (transactions.length >= node.pageSize) {
-                                getNextTransactions(transactionList, transactions[transactions.length - 1].transactionInfo.id, transactionsType);
+                    else if (node.pageSize < 10) {
+                        node.pageSize = 10;
+                    }
+                    accountHttp[node.transactionsType](publicAccount, new QueryParams(node.pageSize, null))
+                        .pipe(
+                            expand((transactions) => transactions.length >= node.pageSize && node.allTransactions ? accountHttp[node.transactionsType](publicAccount, new QueryParams(node.pageSize, transactions[transactions.length - 1].transactionInfo.id)) : EMPTY),
+                            concatMap(transactions => transactions),
+                            toArray()
+                        )
+                        .subscribe(transactions => {
+                            if (node.splitTransactions) {
+                                transactions.forEach(transaction => {
+                                    msg.nem.transaction = transaction;
+                                    msg.nem.transactionType = node.transactionsType;
+                                    node.send(msg);
+                                });
                             }
                             else {
-                                msg.nem.transactions = transactionList;
-                                msg.nem.transactionType = transactionType;
+                                msg.nem.transactions = transactions;
+                                msg.nem.transactionType = node.transactionsType;
                                 node.send(msg);
                             }
-                        });
-                    }
+                        },
+                            error => {
+                                node.status({ fill: "red", shape: "ring", text: "ERROR, check debug window" });
+                                node.error(error);
+                            });
                 }
                 else if (publicKey) {
                     node.error("public key is not correct : " + publicKey, msg);
@@ -70,6 +78,9 @@ module.exports = function (RED) {
             } catch (error) {
                 node.error(error);
             }
+        });
+        node.on('close', function () {
+            node.status({});
         });
     }
     RED.nodes.registerType("transactions", transactions);

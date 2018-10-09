@@ -18,7 +18,7 @@ module.exports = function (RED) {
 
     function mosaicInfo(config) {
         const { MosaicHttp, MosaicId } = require('nem2-sdk');
-        const validation = require('../lib/validation');
+        const validation = require('../lib/validationService');
         RED.nodes.createNode(this, config);
         this.host = RED.nodes.getNode(config.server).host;
         this.mosaic = config.mosaic;

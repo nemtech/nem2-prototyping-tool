@@ -15,7 +15,7 @@
  */
 
 module.exports = function (RED) {
-    const { CosignatureTransaction } = require('nem2-sdk');
+    const { CosignatureTransaction, TransactionType } = require('nem2-sdk');
     function cosignature(config) {
         RED.nodes.createNode(this, config);
         const node = this;
@@ -24,9 +24,11 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                const cosignatureTransaction = CosignatureTransaction.create(msg.nem.transaction);
-                msg.nem.transaction = cosignatureTransaction;
-                msg.nem.transactionType = "cosignature"
+                if (msg.nem.hasOwnProperty("transaction") && msg.nem.transaction.type === TransactionType.AGGREGATE_BONDED) {
+                    msg.nem.transaction = CosignatureTransaction.create(msg.nem.transaction);
+                    msg.nem.transactionType = "cosignature";
+                    node.send(msg);
+                }
             } catch (error) {
                 node.error(error);
             }

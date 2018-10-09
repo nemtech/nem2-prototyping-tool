@@ -15,13 +15,12 @@
  */
 
 module.exports = function (RED) {
-    const { Account, CosignatureTransaction, TransactionType, NetworkType } = require('nem2-sdk');
-    const validation = require('../lib/validation');
+    const { Account, NetworkType } = require('nem2-sdk');
+    const validation = require('../lib/validationService');
     function signTransaction(config) {
         RED.nodes.createNode(this, config);
         this.network = RED.nodes.getNode(config.network).network;
         this.privateKey = config.privateKey;
-        this.coSign = config.coSign;
         let node = this;
 
         this.on('input', function (msg) {
@@ -29,20 +28,20 @@ module.exports = function (RED) {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                const privateKey = node.privateKey || msg.nem.privateKey;
+                const privateKey = node.privateKey || msg.nem.privateKey || (msg.nem.account && msg.nem.account.keyPair ? msg.nem.account.keyPair.privateKey : undefined);
                 const network = node.network || msg.nem.network;
-                if (validation.privateKeyValidate(privateKey)) {
-                    const account = msg.nem.account || Account.createFromPrivateKey(privateKey, NetworkType[network]);
-                    if (!node.coSign && msg.nem.hasOwnProperty("transaction")) {
-                        const signedTransaction = account.sign(msg.nem.transaction);
-                        msg.nem.signedTransaction = signedTransaction;
-                        node.send(msg);
-                    }
-                    else if (node.coSing && msg.nem.transaction.type === TransactionType.AGGREGATE_BONDED) {
-                        const cosignatureTransaction = CosignatureTransaction.create(msg.nem.transaction);
-                        const signedTransaction = account.signCosignatureTransaction(cosignatureTransaction);
-                        msg.nem.signedTransaction = signedTransaction;
-                        node.send(msg);
+                const account = validation.privateKeyValidate(privateKey) ? Account.createFromPrivateKey(privateKey, NetworkType[network]) : undefined;
+                if (account) {
+                    if (msg.nem.hasOwnProperty("transaction")) {
+                        if (msg.nem.transaction.transactionToCosign) {
+                            const signedTransaction = account.signCosignatureTransaction(msg.nem.transaction);
+                            msg.nem.signedTransaction = signedTransaction;
+                            node.send(msg);
+                        } else {
+                            const signedTransaction = account.sign(msg.nem.transaction);
+                            msg.nem.signedTransaction = signedTransaction;
+                            node.send(msg);
+                        }
                     }
                     else {
                         node.error("something went wrong with the transaction", msg);

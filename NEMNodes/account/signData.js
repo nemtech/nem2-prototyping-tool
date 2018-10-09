@@ -17,33 +17,39 @@
 module.exports = function (RED) {
     const { Account, NetworkType } = require('nem2-sdk');
     const validation = require('../lib/validationService');
-    function account(config) {
+
+    function signData(config) {
         RED.nodes.createNode(this, config);
         this.privateKey = config.privateKey;
+        this.data = config.data;
         this.network = RED.nodes.getNode(config.network).network;
         let node = this;
+        let errorText = "";
         node.on('input', function (msg) {
             try {
-                if (typeof msg.nem === "undefined") {
-                    msg.nem = {};
-                }
-                const privateKey = node.privateKey || msg.nem.privateKey;
+                msg.nem = (typeof msg.nem === 'undefined') ? {} : msg.nem;
+
+                const privateKey = node.privateKey || msg.nem.privateKey || (msg.nem.account && msg.nem.account.keyPair ? msg.nem.account.keyPair.privateKey : undefined);
+                const data = node.data || msg.nem.data || msg.payload;
                 const network = node.network || msg.nem.network;
-                if (validation.privateKeyValidate(privateKey)) {
+
+                if (!validation.privateKeyValidate(privateKey))
+                    errorText = "privateKey is empty or not correct:" + privateKey + ", "
+                if (!data)
+                    errorText += "data is empty";
+
+                if (!errorText) {
                     const account = Account.createFromPrivateKey(privateKey, NetworkType[network]);
-                    node.status({ text: account.address.pretty() });
+                    const signature = account.signData(data);
                     msg.nem.account = account;
-                    msg.nem.address = account.address.address;
-                    msg.nem.publicKey = account.publicKey;
-                    msg.nem.account.keyPair.privateKey = account.privateKey;
-                    msg.nem.account.keyPair.publicKey = account.publicKey;
+                    msg.nem.dataSignature = {
+                        data: data,
+                        signature: signature,
+                        publicKey: account.publicKey
+                    };
                     node.send(msg);
-                }
-                else if (privateKey) {
-                    node.error("private key is not correct : " + privateKey, msg);
-                }
-                else {
-                    node.error("private key is empty", msg);
+                } else {
+                    node.error(errorText);
                 }
 
             } catch (error) {
@@ -54,5 +60,5 @@ module.exports = function (RED) {
             node.status({});
         });
     }
-    RED.nodes.registerType("account", account);
+    RED.nodes.registerType("signData", signData);
 };

@@ -26,7 +26,7 @@ describe('transferTransaction Node', function () {
     });
     const configuredFlow =
         [{ id: "n1", type: "networkConfig", network: "MIJIN_TEST" },
-        { id: "n2", type: "transfer", network: "n1", amount: 1000000, name: "transfer", wires: [["n3"]] },
+        { id: "n2", type: "transfer", network: "n1", mosaics: { "nem:xem": 1000000 }, name: "transfer", wires: [["n3"]] },
         { id: "n3", type: "helper" }];
 
     it('should be loaded', function (done) {
@@ -74,28 +74,4 @@ describe('transferTransaction Node', function () {
             }
         });
     });
-
-    it('should throw exception when the mosaic is wrong', function (done) {
-        helper.load([transferTransactionNode, networkConfigNode], configuredFlow, function () {
-            var n2 = helper.getNode("n2");
-            n2.receive({ nem: { message: "testMessage", address: "SCTVW23D2MN5VE4AQ4TZIDZENGNOZXPRPRLIKCF2", mosaic: "nemxem" } });
-            try {
-                helper.log().called.should.be.true();
-                var logEvents = helper.log().args.filter(function (evt) {
-                    return evt[0].type == "transfer";
-                });
-                logEvents.should.have.length(1);
-                var msg = logEvents[0][0];
-                msg.should.have.property('level', helper.log().ERROR);
-                msg.should.have.property('id', 'n2');
-                msg.should.have.property('type', 'transfer');
-                msg.should.have.property('msg', 'mosaic: "nemxem"  is not correct');
-                done();
-            } catch (error) {
-                done(error);
-            }
-        });
-    });
-
-
 });

@@ -19,36 +19,54 @@ module.exports = function (RED) {
     function newBlock(config) {
         RED.nodes.createNode(this, config);
         this.host = RED.nodes.getNode(config.server).host;
+        let context = this.context().flow;
         let node = this;
         let listener = new Listener(node.host);
+        context.set(node.id, false);
+
         node.status({ fill: "red", shape: "ring", text: "not running" });
+
         this.on('input', function (msg) {
             try {
                 if (typeof msg.nem === "undefined") {
                     msg.nem = {};
                 }
-                if (msg.nem !== "undefined" && msg.nem.closeListener === "true") {
+                if (msg.nem.closeListener) {
                     listener.close();
+                    context.set(node.id, false);
                     node.status({ fill: "red", shape: "ring", text: "connection closed" });
                 }
                 else {
-                    listener.open().then(() => {
-                        listener.newBlock()
-                            .subscribe((block) => {
-                                msg.nem.newBlock = block;
-                                node.send(msg);
+                    //ToDo check if websocket is open using sdk instead of context variable. This is not yet implemented in the sdk
+                    if (!context.get(node.id)) {
+                        context.set(node.id, true);
+                        listener.open()
+                            .then(() => {
+                                listener.newBlock()
+                                    .subscribe((block) => {
+                                        msg.nem.newBlock = block;
+                                        node.send(msg);
+                                    });
+                                node.status({ fill: "green", shape: "dot", text: "connected" });
+                            }).catch((error) => {
+                                listener.terminate();
+                                context.set(node.id, false);
+                                node.status({ fill: "red", shape: "ring", text: "ERROR, check debug window" });
+                                node.error(error);
                             });
-                        node.status({ fill: "green", shape: "dot", text: "connected" });
-                    });
+                    }
                 }
             }
             catch (error) {
+                listener.terminate();
+                context.set(node.id, false);
                 node.status({ fill: "red", shape: "ring", text: "error:" + error });
                 node.error(error);
             }
         });
         node.on('close', function () {
             listener.close();
+            context.set(node.id, false);
             node.status({ fill: "red", shape: "ring", text: "disconnected" });
         });
     }

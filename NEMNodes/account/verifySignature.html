@@ -1,0 +1,104 @@
+<!-- 
+ * Copyright 2018 NEM
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('verifySignature', {
+        category: 'NEM Account',
+        color: '#F06449',
+        defaults: {
+            name: { value: "" },
+            publicKey: { value: "", validate: RED.validators.regex(/^([0-9A-Fa-f]{2}){32}$|^.{0}$/) },
+            network: { value: "", type: "networkConfig" },
+            data: { value: "" },
+            signature: { value: "" }
+
+        },
+
+        inputs: 1,
+        outputs: 1,
+        icon: "Accoun-Whitet.png",
+        label: function () {
+            return this.name || "verify signature";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="verifySignature">
+    <div class="form-row" id="node-input-publicKeyView">
+            <label for="node-input-publicKey"><i class="fa fa-key"></i> public key</label>
+            <input type="text" id="node-input-publicKey" placeholder="public key ">
+        </div>
+        <div class="form-row" id="node-input-dataView">
+            <label for="node-input-data"> data </label>
+            <input type="text" id="node-input-data" placeholder="data to sign ">
+        </div>
+        <div class="form-row" id="node-input-signatureView">
+            <label for="node-input-signature"> signature </label>
+            <input type="text" id="node-input-signature" placeholder="signature of the data ">
+        </div>
+        <div class="form-row" id="node-input-networkView" >
+            <label for="node-input-server"><i></i> network</label>
+            <input type="text" id="node-input-network">
+        </div>
+        <div class="form-row" id="node-input-nameView">
+            <label for="node-input-name"><i class="icon-tag"></i>name</label>
+            <input type="text" id="node-input-name"placeholder="name (optional)">
+        </div>
+</script>
+
+
+<script type="text/x-red" data-help-name="verifySignature">
+    <p>Configure your verifySignature node by providing the public key and optional signData and signature</p>
+
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>public key <span class="property-type">string</span></dt>
+        <dd>The account public key.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>data <span class="property-type">string</span></dt>
+        <dd>The data that is signed</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>signature <span class="property-type">string</span></dt>
+        <dd>The signature of the data</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>network <span class="property-type">object</span></dt>
+        <dd>The network configuration.</dd>
+    </dl>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>public key <span class="property-type">string</span></dt>
+        <dd>The account public key.</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>data <span class="property-type">string</span></dt>
+        <dd>if the data field is empty the msg.nem.dataSignature.signData will be used to evaluate the signature</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>signature <span class="property-type">string</span></dt>
+        <dd>if the signature field is empty the msg.nem.dataSignature.signature will be used</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+            <dt>dataSignature <span class="property-type">boolean</span></dt>
+            <dd>An object with the sign data, signature, public key and verified boolean</dd>
+    </dl>
+
+</script> /// make credentials to work

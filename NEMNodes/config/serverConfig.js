@@ -15,7 +15,7 @@
  */
 
 module.exports = function (RED) {
-    const validation = require('../lib/validation');
+    const validation = require('../lib/validationService');
     function serverConfig(n) {
         RED.nodes.createNode(this, n);
         this.url = n.url;
