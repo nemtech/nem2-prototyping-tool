@@ -151,7 +151,7 @@ Feel free to start an issue or create a pull request. Check [CONTRIBUTING](CONTR
 
 ## Getting help
 
-- [documentation][docs]
+- [NEM2 Documentation][docs]
 - Join the community [slack group (#sig-client)][slack] 
 - If you found a bug, [open a new issue][issues]
 
