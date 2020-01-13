@@ -146,12 +146,12 @@ Some nodes require to configure an API gateway (e.g. **announce transaction** an
 
 This project is developed and maintained by NEM Foundation.
 Contributions are welcome and appreciated.
-You can find [nem2-cli on GitHub][self];
+You can find [nem2-prototyping-tool on GitHub][self];
 Feel free to start an issue or create a pull request. Check [CONTRIBUTING](CONTRIBUTING.md) before start.
 
 ## Getting help
 
-- [nem2-cli documentation][docs]
+- [documentation][docs]
 - Join the community [slack group (#sig-client)][slack] 
 - If you found a bug, [open a new issue][issues]
 
