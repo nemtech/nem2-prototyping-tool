@@ -55,7 +55,7 @@
         "lodash": "4.17.4"
     },
     "devDependencies": {
-        "node-red": "^0.18.6",
+        "node-red": "^0.20.8",
         "node-red-node-test-helper": "^0.1.7"
     },
     "engines": {
