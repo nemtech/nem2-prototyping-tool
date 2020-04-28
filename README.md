@@ -1,8 +1,11 @@
-# nem2 prototyping tool
 
-:warning: This repo is archived because it is no longer being maintained. If you are interested in maintaining it, contact us via Slack #sig-client.
+# DEPRECATION NOTICE
 
-:information_source: The prototyping tool is only compatible with catapult-server 0.1.
+The ``nem2-prototyping-tool`` package is no longer maintained.
+The tool is compaible with catapult-server 0.1.
+To continue using the project or advance its development, please create a custom fork.
+
+# NEM2 Prototyping Tool
 
 ![Transfer Transaction](https://gist.githubusercontent.com/jorisadri/7061090eb3cbf724c80e4f49e03e1b94/raw/69b1b9f80594feb9a415aac8de62c769295c397b/transferTransaction.png)
 
@@ -12,7 +15,10 @@ Drag & drop NEM nodes and link them with other services in new and interesting w
 
 ## Node-RED
 
-The nem2-prototyping-tool is a collection of **Node-RED** nodes. [Node-RED] is a visual programming tool to wire together hardware devices, APIs and online services. It provides a browser-based editor to wire nodes. The combination of nodes is named flows, which you can execute in a single click. 
+The nem2-prototyping-tool is a collection of **Node-RED** nodes.
+[Node-RED] is a visual programming tool to wire together hardware devices, APIs and online services.
+It provides a browser-based editor to wire nodes.
+The combination of nodes is named flows, which you can execute in a single click. 
 
 The flows created in Node-RED are stored using JSON, being exportable to share with others.
 
@@ -34,19 +40,19 @@ Do you already have Node-RED app? Open ``Manage palette`` and install ``node-red
 
 ### For Developers
 
-1. Install Node-RED:
+1. Install Node-RED.
 
 ``npm install -g node-red``
 
-2. Clone this repository:
+2. Clone the repository.
 
 `git clone https://github.com/nemtech/nem2-prototyping-tool.git`
 
-3. Install required packages using npm:
+3. Install the required packages using npm.
 
 ``npm install``
 
-4. Create a symbolic link:
+4. Create a symbolic link.
 
 `npm link`
 
@@ -54,7 +60,7 @@ Do you already have Node-RED app? Open ``Manage palette`` and install ``node-red
 
 ``npm link /path/to/cloned-repository/``
 
-5. Run Node-RED:
+5. Run Node-RED.
 
 ``node-red``
 
@@ -87,7 +93,7 @@ In some cases, you could configure inputs and properties directly by double-clic
 
 ![Edit account](docs/edit-account.png)
 
-:information_source: Have you seen  ``private key`` under account node properties?  Setting a property hardcoded overwrites the input. In other words, when not empty, this property will be used instead of ``privateKey`` output provided by **generateAccount** node.
+Have you seen  ``private key`` under account node properties?  Setting a property hardcoded overwrites the input. In other words, when not empty, this property will be used instead of ``privateKey`` output provided by **generateAccount** node.
 
 4. Open the *output* tab and click once on the **debug** node. 
 
