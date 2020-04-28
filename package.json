@@ -52,7 +52,7 @@
     "dependencies": {
         "nem2-sdk": "^0.10.1",
         "rxjs": "^6.2.1",
-        "lodash": "4.17.4"
+        "lodash": "4.17.13"
     },
     "devDependencies": {
         "node-red": "^0.18.6",
